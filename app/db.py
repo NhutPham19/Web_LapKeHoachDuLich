@@ -181,6 +181,11 @@ class PgRepo:
             description=row.get("description") or "",
             image_url=row.get("image_url") or "",
             avg_rating=float(row["avg_rating"]) if row.get("avg_rating") is not None else None,
+            image_public_id=row.get("image_public_id"),
+            image_source=row.get("image_source") or "placeholder",
+            image_author=row.get("image_author"),
+            image_license=row.get("image_license"),
+            image_source_url=row.get("image_source_url"),
         )
 
     def list_destinations(self, province: Optional[str] = None, active_only: bool = True) -> list[Destination]:
@@ -188,7 +193,9 @@ class PgRepo:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 query = """
                     SELECT d.id, d.name, d.province, d.address, d.latitude, d.longitude,
-                           d.description, d.image_url, d.category_id, d.price_range,
+                           d.description, d.image_url, d.image_public_id, d.image_source,
+                           d.image_author, d.image_license, d.image_source_url,
+                           d.category_id, d.price_range,
                            d.noise_level, d.duration_hours, d.is_outdoor, d.ticket_price,
                            d.is_active, d.opening_hours, d.tags, d.avg_rating,
                            COALESCE(c.name, '') as category_name
@@ -207,7 +214,9 @@ class PgRepo:
                 cur.execute(
                     """
                     SELECT d.id, d.name, d.province, d.address, d.latitude, d.longitude,
-                           d.description, d.image_url, d.category_id, d.price_range,
+                           d.description, d.image_url, d.image_public_id, d.image_source,
+                           d.image_author, d.image_license, d.image_source_url,
+                           d.category_id, d.price_range,
                            d.noise_level, d.duration_hours, d.is_outdoor, d.ticket_price,
                            d.is_active, d.opening_hours, d.tags, d.avg_rating,
                            COALESCE(c.name, '') as category_name

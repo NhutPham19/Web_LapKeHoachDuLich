@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="100%" height="100%">
+  <defs>
+    <linearGradient id="grad-default" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#0369a1" />
+    </linearGradient>
+  </defs>
+  <rect width="640" height="360" fill="url(#grad-default)" />
+  <g fill="rgba(255,255,255,0.25)" stroke="rgba(255,255,255,0.7)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Map pin -->
+    <path d="M320 100 C290 100 270 125 270 155 C270 195 320 250 320 250 C320 250 370 195 370 155 C370 125 350 100 320 100 Z" fill="rgba(255,255,255,0.3)" />
+    <circle cx="320" cy="150" r="16" fill="#ffffff" stroke="none" />
+  </g>
+  <text x="320" y="315" font-family="system-ui, -apple-system, sans-serif" font-size="22" font-weight="bold" fill="#ffffff" text-anchor="middle" letter-spacing="1">ĐIỂM ĐẾN DU LỊCH</text>
+</svg>

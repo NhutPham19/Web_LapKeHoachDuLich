@@ -210,13 +210,7 @@
                     <div class="col-md-6">
                         <div class="card h-100 destination-card border rounded-3 p-3">
                             <div class="d-flex gap-3">
-                                {% if item.destination.image_url %}
-                                <img src="{{ item.destination.image_url }}" alt="{{ item.destination.name }}" class="rounded-3 object-fit-cover" style="width: 100px; height: 100px;">
-                                {% else %}
-                                <div class="bg-light rounded-3 d-flex align-items-center justify-content-center text-muted" style="width: 100px; height: 100px;">
-                                    <i class="bi bi-image fs-2"></i>
-                                </div>
-                                {% endif %}
+                                <img src="{{ dest_img_url(item.destination, 200) }}" alt="{{ item.destination.name }}" class="rounded-3 object-fit-cover flex-shrink-0" style="width: 100px; height: 100px;" loading="lazy">
                                 <div class="flex-grow-1">
                                     <div class="d-flex justify-content-between align-items-start">
                                         <h6 class="fw-bold mb-1 text-dark">{{ item.destination.name }}</h6>
@@ -247,6 +241,11 @@
                                         </span>
                                         {% endif %}
                                     </div>
+                                    {% if item.destination.image_author %}
+                                    <div class="text-muted mt-2 pt-1 border-top" style="font-size: 0.72rem;">
+                                        <i class="bi bi-camera me-1"></i>Ảnh: {{ item.destination.image_author }}{% if item.destination.image_license %} ({{ item.destination.image_license }}){% endif %}
+                                    </div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>

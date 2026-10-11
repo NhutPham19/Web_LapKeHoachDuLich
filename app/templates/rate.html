@@ -20,9 +20,7 @@
                     {% for dest in destinations %}
                     <div class="card mb-4 border rounded-3 p-3">
                         <div class="d-flex align-items-center mb-3">
-                            {% if dest.image_url %}
-                            <img src="{{ dest.image_url }}" alt="{{ dest.name }}" class="rounded-3 me-3 object-fit-cover" style="width: 60px; height: 60px;">
-                            {% endif %}
+                            <img src="{{ dest_img_url(dest, 120) }}" alt="{{ dest.name }}" class="rounded-3 me-3 object-fit-cover flex-shrink-0" style="width: 60px; height: 60px;" loading="lazy">
                             <div>
                                 <h5 class="fw-bold mb-0 text-dark">{{ dest.name }}</h5>
                                 <small class="text-muted"><i class="bi bi-geo-alt me-1"></i>{{ dest.province }}</small>

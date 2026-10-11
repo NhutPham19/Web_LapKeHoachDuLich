@@ -68,6 +68,11 @@ class Destination:
     description: str = ""
     image_url: str = ""
     avg_rating: Optional[float] = None
+    image_public_id: Optional[str] = None
+    image_source: str = "placeholder"     # 'wikimedia' | 'placeholder' | 'manual'
+    image_author: Optional[str] = None
+    image_license: Optional[str] = None
+    image_source_url: Optional[str] = None
 
 @dataclass(frozen=True)
 class ScoredDestination:

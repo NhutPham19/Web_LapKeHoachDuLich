@@ -32,6 +32,33 @@ def create_app(repo=None):
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
         return response
 
+    def destination_img_url(dest, width=640) -> str:
+        """
+        Helper Jinja2 render ảnh cho điểm đến:
+        1. Có image_public_id và CLOUDINARY_CLOUD_NAME: dùng Cloudinary transform URL.
+        2. Không có public_id nhưng có image_url hợp lệ (bắt đầu bằng http): dùng image_url cũ.
+        3. Fallback theo 4 category của hệ thống (1: Thiên nhiên, 2: Văn hóa, 3: Ẩm thực, 4: Giải trí).
+        """
+        cloud_name = config.CLOUDINARY_CLOUD_NAME
+        pub_id = getattr(dest, "image_public_id", None) or (dest.get("image_public_id") if isinstance(dest, dict) else None)
+        if pub_id and cloud_name:
+            return f"https://res.cloudinary.com/{cloud_name}/image/upload/c_fill,ar_16:9,g_auto,f_auto,q_auto,w_{width}/{pub_id}"
+
+        img_url = getattr(dest, "image_url", "") or (dest.get("image_url", "") if isinstance(dest, dict) else "")
+        if img_url and str(img_url).startswith("http"):
+            return str(img_url)
+
+        cat_id = getattr(dest, "category_id", 0) or (dest.get("category_id", 0) if isinstance(dest, dict) else 0)
+        cat_map = {
+            1: "/static/images/placeholders/thien_nhien.svg",
+            2: "/static/images/placeholders/van_hoa.svg",
+            3: "/static/images/placeholders/am_thuc.svg",
+            4: "/static/images/placeholders/giai_tri.svg",
+        }
+        return cat_map.get(cat_id, "/static/images/placeholders/default.svg")
+
+    app.jinja_env.globals["dest_img_url"] = destination_img_url
+
     @app.context_processor
     def inject_csrf_token():
         if "csrf_token" not in session:

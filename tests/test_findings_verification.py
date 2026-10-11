@@ -209,6 +209,66 @@ class FindingsVerificationTests(unittest.TestCase):
         res = self.client.get("/trips/9999")
         self.assertEqual(res.status_code, 404)
 
+    def test_task_t2_image_helper_and_defaults(self):
+        """Task T2: Kiểm tra helper render ảnh dest_img_url và default fields của Destination."""
+        # 1. Kiểm tra Destination có default fields mới
+        d = Destination(
+            id=1, name="Test", province="Đà Lạt", latitude=11.9, longitude=108.4,
+            category_id=1, price_range=1, noise_level=1, duration_hours=1.0, is_outdoor=True
+        )
+        self.assertIsNone(d.image_public_id)
+        self.assertEqual(d.image_source, "placeholder")
+        self.assertIsNone(d.image_author)
+        self.assertIsNone(d.image_license)
+        self.assertIsNone(d.image_source_url)
+
+        # 2. Kiểm tra helper dest_img_url trong Jinja env
+        dest_img_url = self.app.jinja_env.globals["dest_img_url"]
+
+        # Case A: Fallback category placeholder
+        self.assertEqual(dest_img_url(d), "/static/images/placeholders/thien_nhien.svg")
+        d_cul = Destination(
+            id=2, name="Test Cul", province="Đà Lạt", latitude=11.9, longitude=108.4,
+            category_id=2, price_range=1, noise_level=1, duration_hours=1.0, is_outdoor=True
+        )
+        self.assertEqual(dest_img_url(d_cul), "/static/images/placeholders/van_hoa.svg")
+        d_food = Destination(
+            id=3, name="Test Food", province="Đà Lạt", latitude=11.9, longitude=108.4,
+            category_id=3, price_range=1, noise_level=1, duration_hours=1.0, is_outdoor=True
+        )
+        self.assertEqual(dest_img_url(d_food), "/static/images/placeholders/am_thuc.svg")
+        d_ent = Destination(
+            id=4, name="Test Ent", province="Đà Lạt", latitude=11.9, longitude=108.4,
+            category_id=4, price_range=1, noise_level=1, duration_hours=1.0, is_outdoor=True
+        )
+        self.assertEqual(dest_img_url(d_ent), "/static/images/placeholders/giai_tri.svg")
+        d_other = Destination(
+            id=5, name="Test Other", province="Đà Lạt", latitude=11.9, longitude=108.4,
+            category_id=99, price_range=1, noise_level=1, duration_hours=1.0, is_outdoor=True
+        )
+        self.assertEqual(dest_img_url(d_other), "/static/images/placeholders/default.svg")
+
+        # Case B: Dùng image_url cũ
+        d_url = Destination(
+            id=6, name="Test URL", province="Đà Lạt", latitude=11.9, longitude=108.4,
+            category_id=1, price_range=1, noise_level=1, duration_hours=1.0, is_outdoor=True,
+            image_url="https://example.com/photo.jpg"
+        )
+        self.assertEqual(dest_img_url(d_url), "https://example.com/photo.jpg")
+
+        # Case C: Dùng Cloudinary khi có image_public_id và cloud_name
+        from unittest.mock import patch
+        with patch("app.config.CLOUDINARY_CLOUD_NAME", "my_cloud"):
+            d_cld = Destination(
+                id=7, name="Test Cloudinary", province="Đà Lạt", latitude=11.9, longitude=108.4,
+                category_id=1, price_range=1, noise_level=1, duration_hours=1.0, is_outdoor=True,
+                image_public_id="dulich_vn/da_lat/thung-lung"
+            )
+            cld_url = dest_img_url(d_cld, width=640)
+            self.assertIn("res.cloudinary.com/my_cloud/image/upload", cld_url)
+            self.assertIn("w_640", cld_url)
+            self.assertIn("dulich_vn/da_lat/thung-lung", cld_url)
+
 
 if __name__ == "__main__":
     unittest.main()

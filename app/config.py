@@ -12,4 +12,5 @@ if IS_PRODUCTION and (not SECRET_KEY or SECRET_KEY == "dev-secret-key-change-in-
 
 DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/dulich")
 OPENWEATHER_API_KEY = os.environ.get("OPENWEATHER_API_KEY", "")
+CLOUDINARY_CLOUD_NAME = os.environ.get("CLOUDINARY_CLOUD_NAME", "")
 
