@@ -1,7 +1,13 @@
 from typing import Optional
 import numpy as np
 
-from app.contracts import CF_K_NEIGHBORS, CF_MIN_TOTAL_RATINGS, CF_MIN_USER_RATINGS
+from app.contracts import (
+    CF_K_NEIGHBORS,
+    CF_MIN_CORATED_ITEMS,
+    CF_MIN_TOTAL_RATINGS,
+    CF_MIN_USER_RATINGS,
+    CF_SHRINKAGE_LAMBDA,
+)
 
 
 def score(
@@ -67,14 +73,43 @@ def score(
 
     mean_u = user_means[target_u_idx]
 
-    # 3. Tính độ tương đồng cosine giữa target_user và tất cả users khác
-    dot_products = np.dot(matrix, target_vec).flatten()
-    norms = np.linalg.norm(matrix, axis=1) * np.linalg.norm(target_vec)
-    with np.errstate(divide="ignore", invalid="ignore"):
-        similarities = np.where(norms > 0, dot_products / norms, 0.0)
+    # 3. Tính độ tương đồng Pearson correlation giữa target_user và tất cả users khác trên tập co-rated items
+    target_rated_indices = set(np.where(matrix[target_u_idx] > 0)[0])
+    similarities = np.zeros(len(user_set), dtype=float)
 
-    # Loại bỏ chính target_user
-    similarities[target_u_idx] = 0.0
+    for v_idx in range(len(user_set)):
+        if v_idx == target_u_idx:
+            continue
+        v_rated_indices = set(np.where(matrix[v_idx] > 0)[0])
+        common = list(target_rated_indices & v_rated_indices)
+        n = len(common)
+        if n < CF_MIN_CORATED_ITEMS:
+            continue
+
+        u_common = matrix[target_u_idx, common] - mean_u
+        v_common = matrix[v_idx, common] - user_means[v_idx]
+
+        cov = float(np.sum(u_common * v_common))
+        norm_u = float(np.linalg.norm(u_common))
+        norm_v = float(np.linalg.norm(v_common))
+
+        if norm_u * norm_v > 1e-9:
+            raw_sim = cov / (norm_u * norm_v)
+        else:
+            # Fallback cosine nếu user có độ lệch chuẩn = 0 trên tập item chung
+            u_raw = matrix[target_u_idx, common]
+            v_raw = matrix[v_idx, common]
+            raw_norm_u = float(np.linalg.norm(u_raw))
+            raw_norm_v = float(np.linalg.norm(v_raw))
+            if raw_norm_u * raw_norm_v > 1e-9:
+                raw_sim = float(np.dot(u_raw, v_raw)) / (raw_norm_u * raw_norm_v)
+            else:
+                raw_sim = 0.0
+
+        # Áp dụng shrinkage phạt cặp user có ít item chung: sim * n / (n + lambda)
+        shrinkage = n / (n + CF_SHRINKAGE_LAMBDA)
+        sim = raw_sim * shrinkage
+        similarities[v_idx] = max(0.0, sim)
 
     # 4. Dự đoán điểm cho từng candidate_id (Finding #13)
     results: dict[int, float] = {}

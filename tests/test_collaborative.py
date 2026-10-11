@@ -77,6 +77,39 @@ class CollaborativeFilteringServiceTests(unittest.TestCase):
         # Các điểm 11, 12 chưa ai chấm nên không có kết quả
         self.assertEqual(scores, {})
 
+    def test_corated_threshold_and_shrinkage(self):
+        """Claude Task T6: Ngưỡng co-rated items và shrinkage loại bỏ neighbor dưới ngưỡng n < 2."""
+        ratings = [
+            (1, 1, 5), (1, 2, 4), (1, 3, 5), (1, 4, 2), (1, 5, 1),
+            # user 2: chỉ co-rated 1 điểm (n=1 < 2) -> sim = 0
+            (2, 1, 5), (2, 20, 5), (2, 21, 5), (2, 22, 5), (2, 23, 5),
+            (2, 99, 5),
+            # user 3: co-rated 2 điểm 1, 2 (n=2 >= 2) -> sim > 0
+            (3, 1, 5), (3, 2, 4), (3, 31, 3), (3, 32, 4), (3, 33, 5),
+            (3, 100, 5),
+        ]
+        dummy_ratings = [(10 + u, 40 + d, 4) for u in range(10) for d in range(5)]
+        full_ratings = ratings + dummy_ratings
+
+        scores = collaborative.score(1, full_ratings, [99, 100])
+        # Candidate 99 không có neighbor (user 2 bị loại vì n=1 < 2)
+        self.assertNotIn(99, scores)
+        # Candidate 100 có neighbor user 3 (n=2 >= 2)
+        self.assertIn(100, scores)
+
+    def test_negative_pearson_correlation_excluded_from_neighbors(self):
+        """Claude Task T6: Cặp user có Pearson âm (đối lập sở thích) không bao giờ trở thành neighbor."""
+        ratings = [
+            (1, 1, 5), (1, 2, 5), (1, 3, 1), (1, 4, 1), (1, 5, 1),
+            (2, 1, 1), (2, 2, 1), (2, 3, 5), (2, 4, 5), (2, 5, 5),
+            (2, 88, 5),
+        ]
+        dummy_ratings = [(10 + u, 40 + d, 4) for u in range(10) for d in range(5)]
+        full_ratings = ratings + dummy_ratings
+
+        scores = collaborative.score(1, full_ratings, [88])
+        self.assertNotIn(88, scores)
+
 
 if __name__ == "__main__":
     unittest.main()

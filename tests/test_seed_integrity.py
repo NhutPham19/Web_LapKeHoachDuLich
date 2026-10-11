@@ -193,6 +193,48 @@ class SeedDataIntegrityTests(unittest.TestCase):
                 f"Hub '{hub}' có ít hơn 2 điểm miễn phí vé (hiện có: {free_count})"
             )
 
+    def test_seed_ratings_csv_integrity(self):
+        """
+        Claude Task T6: Kiểm tra tính toàn vẹn của dữ liệu seed ratings.csv:
+        - 600 - 1.000 ratings mô phỏng.
+        - 40 - 60 users mẫu, mỗi user >= 5 ratings.
+        - Điểm score trong [1, 5], is_approved là True.
+        - Không có trùng lặp (user_id, destination_id).
+        """
+        ratings_file = Path(__file__).parent.parent / "db" / "seed" / "ratings.csv"
+        self.assertTrue(ratings_file.exists(), f"Không tìm thấy file seed ratings: {ratings_file}")
+
+        with open(ratings_file, mode="r", encoding="utf-8") as f:
+            reader = list(csv.DictReader(f))
+
+        self.assertGreaterEqual(len(reader), 600, "Tổng số ratings phải >= 600")
+        self.assertLessEqual(len(reader), 1000, "Tổng số ratings phải <= 1000")
+
+        users = set()
+        user_counts = {}
+        seen_pairs = set()
+
+        for idx, row in enumerate(reader, start=2):
+            uid = int(row["user_id"])
+            did = int(row["destination_id"])
+            score = int(row["score"])
+            is_approved = row["is_approved"].strip().lower() in ("true", "1")
+
+            self.assertIn(score, range(1, 6), f"Dòng {idx}: score {score} không nằm trong [1, 5]")
+            self.assertTrue(is_approved, f"Dòng {idx}: is_approved phải là True")
+            self.assertTrue(1 <= did <= 96, f"Dòng {idx}: destination_id {did} ngoài phạm vi 1..96")
+
+            pair = (uid, did)
+            self.assertNotIn(pair, seen_pairs, f"Dòng {idx}: Trùng cặp (user_id={uid}, destination_id={did})")
+            seen_pairs.add(pair)
+
+            users.add(uid)
+            user_counts[uid] = user_counts.get(uid, 0) + 1
+
+        self.assertTrue(40 <= len(users) <= 60, f"Số users ({len(users)}) phải nằm trong [40, 60]")
+        for uid, count in user_counts.items():
+            self.assertGreaterEqual(count, 5, f"User {uid} có ít hơn 5 ratings ({count})")
+
 
 if __name__ == "__main__":
     unittest.main()

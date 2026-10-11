@@ -31,6 +31,8 @@ HYBRID_WEIGHT_CB, HYBRID_WEIGHT_CF = 0.7, 0.3
 CF_K_NEIGHBORS = 10                       # Finding #13: K=10 trong các user đã chấm candidate
 CF_MIN_USER_RATINGS = 5                   # user có < 5 đánh giá → bỏ CF (cold start)
 CF_MIN_TOTAL_RATINGS = 50                 # toàn hệ thống < 50 đánh giá → bỏ CF
+CF_MIN_CORATED_ITEMS = 2                  # Claude 1A: Ngưỡng tối thiểu số item chung để tính tương đồng
+CF_SHRINKAGE_LAMBDA = 2.0                 # Claude 1A: Hệ số shrinkage phạt cặp user ít item chung
 WEATHER_CACHE_TTL_HOURS = 3
 VN_UTC_OFFSET_HOURS = 7
 TRAVEL_SPEED_KMH = 30                     # Finding #17: vận tốc di chuyển ước tính đô thị/du lịch

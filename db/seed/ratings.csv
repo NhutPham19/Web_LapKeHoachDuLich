@@ -1,0 +1,665 @@
+user_id,destination_id,score,review_text,is_approved
+1,40,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+1,33,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+1,56,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+1,41,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+1,64,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+1,60,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+1,37,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+1,62,1,"Trải nghiệm không như ý, quá xô bồ và dịch vụ thiếu chuyên nghiệp.",True
+1,36,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+1,54,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+1,50,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+1,35,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+1,51,3,"Dịch vụ ở mức trung bình, vào giờ cao điểm phải xếp hàng khá lâu.",True
+1,46,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+1,34,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+2,77,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+2,87,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+2,67,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+2,66,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+2,86,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+2,72,1,"Trải nghiệm không như ý, quá xô bồ và dịch vụ thiếu chuyên nghiệp.",True
+2,89,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+2,74,1,"Trải nghiệm không như ý, quá xô bồ và dịch vụ thiếu chuyên nghiệp.",True
+2,94,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+2,91,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+2,68,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+2,96,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+2,73,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+2,79,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+3,17,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+3,5,3,"Địa điểm tạm ổn, cảnh quan ở mức vừa phải, giá vé hơi cao so với trải nghiệm.",True
+3,8,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+3,24,3,"Địa điểm tạm ổn, cảnh quan ở mức vừa phải, giá vé hơi cao so với trải nghiệm.",True
+3,18,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+3,28,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+3,9,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+3,29,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+3,19,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+3,14,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+3,25,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+4,50,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+4,57,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+4,53,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+4,43,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+4,36,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+4,42,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+4,46,5,"Món ăn đậm đà bản sắc địa phương, phục vụ nhanh nhẹn và chu đáo.",True
+4,38,3,"Địa điểm tạm ổn, cảnh quan ở mức vừa phải, giá vé hơi cao so với trải nghiệm.",True
+4,47,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+4,33,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+4,41,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+4,49,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+4,63,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+4,62,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+4,60,1,"Trải nghiệm không như ý, quá xô bồ và dịch vụ thiếu chuyên nghiệp.",True
+5,77,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+5,87,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+5,74,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+5,96,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+5,86,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+5,85,3,"Địa điểm tạm ổn, cảnh quan ở mức vừa phải, giá vé hơi cao so với trải nghiệm.",True
+5,76,1,"Trải nghiệm không như ý, quá xô bồ và dịch vụ thiếu chuyên nghiệp.",True
+5,79,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+5,81,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+5,89,3,"Dịch vụ ở mức trung bình, vào giờ cao điểm phải xếp hàng khá lâu.",True
+5,68,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+5,72,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+5,91,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+5,67,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+6,7,5,"Món ăn đậm đà bản sắc địa phương, phục vụ nhanh nhẹn và chu đáo.",True
+6,2,1,"Trải nghiệm không như ý, quá xô bồ và dịch vụ thiếu chuyên nghiệp.",True
+6,13,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+6,24,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+6,11,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+6,26,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+6,4,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+6,8,3,"Địa điểm tạm ổn, cảnh quan ở mức vừa phải, giá vé hơi cao so với trải nghiệm.",True
+6,32,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+6,29,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+6,18,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+6,15,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+6,5,5,"Món ăn đậm đà bản sắc địa phương, phục vụ nhanh nhẹn và chu đáo.",True
+6,14,3,"Dịch vụ ở mức trung bình, vào giờ cao điểm phải xếp hàng khá lâu.",True
+6,6,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+7,64,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+7,37,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+7,39,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+7,42,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+7,62,1,"Trải nghiệm không như ý, quá xô bồ và dịch vụ thiếu chuyên nghiệp.",True
+7,34,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+7,51,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+7,56,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+7,50,3,"Dịch vụ ở mức trung bình, vào giờ cao điểm phải xếp hàng khá lâu.",True
+7,59,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+7,43,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+7,55,3,"Địa điểm tạm ổn, cảnh quan ở mức vừa phải, giá vé hơi cao so với trải nghiệm.",True
+7,53,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+7,58,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+7,48,1,"Trải nghiệm không như ý, quá xô bồ và dịch vụ thiếu chuyên nghiệp.",True
+8,94,5,"Món ăn đậm đà bản sắc địa phương, phục vụ nhanh nhẹn và chu đáo.",True
+8,84,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+8,83,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+8,68,5,"Món ăn đậm đà bản sắc địa phương, phục vụ nhanh nhẹn và chu đáo.",True
+8,67,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+8,82,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+8,71,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+8,81,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+8,73,1,"Trải nghiệm không như ý, quá xô bồ và dịch vụ thiếu chuyên nghiệp.",True
+8,69,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+9,19,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+9,20,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+9,7,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+9,23,5,"Món ăn đậm đà bản sắc địa phương, phục vụ nhanh nhẹn và chu đáo.",True
+9,11,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+9,30,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+9,22,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+9,21,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+9,9,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+9,17,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+9,16,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+9,24,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+10,46,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+10,54,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+10,40,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+10,63,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+10,36,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+10,44,3,"Địa điểm tạm ổn, cảnh quan ở mức vừa phải, giá vé hơi cao so với trải nghiệm.",True
+10,57,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+10,50,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+10,64,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+10,52,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+10,37,1,"Trải nghiệm không như ý, quá xô bồ và dịch vụ thiếu chuyên nghiệp.",True
+10,62,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+11,82,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+11,92,3,"Địa điểm tạm ổn, cảnh quan ở mức vừa phải, giá vé hơi cao so với trải nghiệm.",True
+11,67,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+11,89,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+11,73,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+11,76,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+11,85,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+11,81,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+11,77,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+11,86,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+11,96,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+11,75,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+12,28,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+12,3,1,"Trải nghiệm không như ý, quá xô bồ và dịch vụ thiếu chuyên nghiệp.",True
+12,22,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+12,11,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+12,20,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+12,29,1,"Trải nghiệm không như ý, quá xô bồ và dịch vụ thiếu chuyên nghiệp.",True
+12,30,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+12,4,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+12,24,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+12,10,3,"Dịch vụ ở mức trung bình, vào giờ cao điểm phải xếp hàng khá lâu.",True
+12,17,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+12,23,1,"Trải nghiệm không như ý, quá xô bồ và dịch vụ thiếu chuyên nghiệp.",True
+13,38,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+13,42,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+13,49,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+13,54,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+13,53,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+13,52,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+13,43,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+13,35,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+13,40,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+13,61,1,"Trải nghiệm không như ý, quá xô bồ và dịch vụ thiếu chuyên nghiệp.",True
+13,63,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+13,56,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+13,39,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+13,37,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+13,33,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+14,92,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+14,91,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+14,94,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+14,82,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+14,79,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+14,70,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+14,88,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+14,80,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+14,96,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+14,73,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+14,72,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+14,85,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+14,87,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+14,81,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+14,89,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+14,86,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+15,18,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+15,14,1,"Trải nghiệm không như ý, quá xô bồ và dịch vụ thiếu chuyên nghiệp.",True
+15,16,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+15,1,3,"Địa điểm tạm ổn, cảnh quan ở mức vừa phải, giá vé hơi cao so với trải nghiệm.",True
+15,13,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+15,11,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+15,22,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+15,26,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+15,28,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+15,6,5,"Món ăn đậm đà bản sắc địa phương, phục vụ nhanh nhẹn và chu đáo.",True
+15,15,3,"Dịch vụ ở mức trung bình, vào giờ cao điểm phải xếp hàng khá lâu.",True
+16,38,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+16,48,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+16,33,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+16,56,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+16,50,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+16,34,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+16,44,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+16,40,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+16,53,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+16,35,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+16,61,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+16,59,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+16,62,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+16,57,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+16,39,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+16,52,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+17,92,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+17,86,1,"Trải nghiệm không như ý, quá xô bồ và dịch vụ thiếu chuyên nghiệp.",True
+17,76,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+17,67,5,"Món ăn đậm đà bản sắc địa phương, phục vụ nhanh nhẹn và chu đáo.",True
+17,81,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+17,85,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+17,75,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+17,65,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+17,78,5,"Món ăn đậm đà bản sắc địa phương, phục vụ nhanh nhẹn và chu đáo.",True
+17,80,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+17,68,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+17,88,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+18,25,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+18,11,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+18,1,3,"Địa điểm tạm ổn, cảnh quan ở mức vừa phải, giá vé hơi cao so với trải nghiệm.",True
+18,16,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+18,28,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+18,31,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+18,6,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+18,29,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+18,7,5,"Món ăn đậm đà bản sắc địa phương, phục vụ nhanh nhẹn và chu đáo.",True
+18,12,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+18,9,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+18,27,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+18,22,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+18,20,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+19,45,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+19,43,5,"Món ăn đậm đà bản sắc địa phương, phục vụ nhanh nhẹn và chu đáo.",True
+19,36,1,"Trải nghiệm không như ý, quá xô bồ và dịch vụ thiếu chuyên nghiệp.",True
+19,56,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+19,50,5,"Món ăn đậm đà bản sắc địa phương, phục vụ nhanh nhẹn và chu đáo.",True
+19,57,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+19,55,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+19,38,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+19,39,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+19,61,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+19,48,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+19,41,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+19,51,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+19,49,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+19,42,1,"Trải nghiệm không như ý, quá xô bồ và dịch vụ thiếu chuyên nghiệp.",True
+20,74,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+20,90,3,"Dịch vụ ở mức trung bình, vào giờ cao điểm phải xếp hàng khá lâu.",True
+20,83,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+20,96,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+20,67,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+20,72,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+20,68,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+20,82,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+20,78,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+20,84,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+20,87,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+21,3,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+21,8,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+21,10,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+21,23,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+21,30,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+21,29,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+21,15,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+21,32,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+21,22,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+21,31,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+21,9,3,"Dịch vụ ở mức trung bình, vào giờ cao điểm phải xếp hàng khá lâu.",True
+21,21,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+22,53,3,"Dịch vụ ở mức trung bình, vào giờ cao điểm phải xếp hàng khá lâu.",True
+22,52,3,"Dịch vụ ở mức trung bình, vào giờ cao điểm phải xếp hàng khá lâu.",True
+22,41,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+22,33,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+22,35,3,"Địa điểm tạm ổn, cảnh quan ở mức vừa phải, giá vé hơi cao so với trải nghiệm.",True
+22,40,3,"Dịch vụ ở mức trung bình, vào giờ cao điểm phải xếp hàng khá lâu.",True
+22,54,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+22,51,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+22,57,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+22,61,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+22,58,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+22,62,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+22,56,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+22,34,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+22,38,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+23,94,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+23,78,3,"Địa điểm tạm ổn, cảnh quan ở mức vừa phải, giá vé hơi cao so với trải nghiệm.",True
+23,66,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+23,71,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+23,81,3,"Dịch vụ ở mức trung bình, vào giờ cao điểm phải xếp hàng khá lâu.",True
+23,76,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+23,84,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+23,89,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+23,80,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+23,85,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+23,79,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+23,96,3,"Dịch vụ ở mức trung bình, vào giờ cao điểm phải xếp hàng khá lâu.",True
+23,93,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+23,73,3,"Dịch vụ ở mức trung bình, vào giờ cao điểm phải xếp hàng khá lâu.",True
+23,82,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+23,69,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+24,9,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+24,28,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+24,3,3,"Dịch vụ ở mức trung bình, vào giờ cao điểm phải xếp hàng khá lâu.",True
+24,32,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+24,25,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+24,26,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+24,14,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+24,11,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+24,17,3,"Dịch vụ ở mức trung bình, vào giờ cao điểm phải xếp hàng khá lâu.",True
+24,29,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+24,1,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+24,10,3,"Dịch vụ ở mức trung bình, vào giờ cao điểm phải xếp hàng khá lâu.",True
+24,21,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+24,19,3,"Địa điểm tạm ổn, cảnh quan ở mức vừa phải, giá vé hơi cao so với trải nghiệm.",True
+24,16,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+25,33,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+25,56,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+25,37,5,"Món ăn đậm đà bản sắc địa phương, phục vụ nhanh nhẹn và chu đáo.",True
+25,46,3,"Dịch vụ ở mức trung bình, vào giờ cao điểm phải xếp hàng khá lâu.",True
+25,60,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+25,53,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+25,62,3,"Dịch vụ ở mức trung bình, vào giờ cao điểm phải xếp hàng khá lâu.",True
+25,35,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+25,48,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+25,41,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+25,43,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+25,52,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+25,45,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+26,68,3,"Dịch vụ ở mức trung bình, vào giờ cao điểm phải xếp hàng khá lâu.",True
+26,74,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+26,76,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+26,94,3,"Địa điểm tạm ổn, cảnh quan ở mức vừa phải, giá vé hơi cao so với trải nghiệm.",True
+26,78,3,"Dịch vụ ở mức trung bình, vào giờ cao điểm phải xếp hàng khá lâu.",True
+26,69,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+26,72,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+26,81,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+26,92,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+26,83,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+26,86,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+26,70,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+27,20,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+27,7,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+27,13,3,"Dịch vụ ở mức trung bình, vào giờ cao điểm phải xếp hàng khá lâu.",True
+27,28,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+27,16,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+27,4,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+27,8,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+27,30,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+27,19,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+27,12,3,"Địa điểm tạm ổn, cảnh quan ở mức vừa phải, giá vé hơi cao so với trải nghiệm.",True
+27,24,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+27,10,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+27,21,3,"Dịch vụ ở mức trung bình, vào giờ cao điểm phải xếp hàng khá lâu.",True
+27,1,3,"Dịch vụ ở mức trung bình, vào giờ cao điểm phải xếp hàng khá lâu.",True
+27,25,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+27,9,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+28,50,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+28,59,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+28,38,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+28,41,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+28,63,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+28,48,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+28,58,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+28,42,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+28,56,3,"Dịch vụ ở mức trung bình, vào giờ cao điểm phải xếp hàng khá lâu.",True
+28,43,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+28,36,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+28,47,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+29,79,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+29,85,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+29,67,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+29,95,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+29,91,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+29,96,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+29,87,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+29,74,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+29,93,5,"Món ăn đậm đà bản sắc địa phương, phục vụ nhanh nhẹn và chu đáo.",True
+29,78,3,"Địa điểm tạm ổn, cảnh quan ở mức vừa phải, giá vé hơi cao so với trải nghiệm.",True
+29,68,3,"Dịch vụ ở mức trung bình, vào giờ cao điểm phải xếp hàng khá lâu.",True
+29,69,3,"Địa điểm tạm ổn, cảnh quan ở mức vừa phải, giá vé hơi cao so với trải nghiệm.",True
+30,24,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+30,4,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+30,22,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+30,12,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+30,18,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+30,21,3,"Địa điểm tạm ổn, cảnh quan ở mức vừa phải, giá vé hơi cao so với trải nghiệm.",True
+30,29,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+30,2,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+30,13,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+30,9,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+30,7,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+30,31,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+30,15,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+30,3,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+30,30,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+30,1,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+31,37,3,"Địa điểm tạm ổn, cảnh quan ở mức vừa phải, giá vé hơi cao so với trải nghiệm.",True
+31,48,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+31,47,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+31,57,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+31,44,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+31,49,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+31,51,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+31,36,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+31,62,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+31,59,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+31,40,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+31,52,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+31,34,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+31,55,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+31,42,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+32,92,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+32,75,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+32,86,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+32,73,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+32,76,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+32,69,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+32,94,1,"Trải nghiệm không như ý, quá xô bồ và dịch vụ thiếu chuyên nghiệp.",True
+32,80,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+32,67,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+32,88,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+32,87,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+32,90,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+33,8,1,"Trải nghiệm không như ý, quá xô bồ và dịch vụ thiếu chuyên nghiệp.",True
+33,25,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+33,9,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+33,19,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+33,32,5,"Món ăn đậm đà bản sắc địa phương, phục vụ nhanh nhẹn và chu đáo.",True
+33,26,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+33,14,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+33,18,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+33,20,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+33,24,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+33,22,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+33,21,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+34,38,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+34,61,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+34,34,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+34,37,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+34,64,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+34,57,1,"Trải nghiệm không như ý, quá xô bồ và dịch vụ thiếu chuyên nghiệp.",True
+34,52,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+34,62,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+34,54,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+34,35,5,"Món ăn đậm đà bản sắc địa phương, phục vụ nhanh nhẹn và chu đáo.",True
+34,41,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+34,47,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+34,46,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+34,48,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+34,53,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+34,58,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+35,66,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+35,79,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+35,94,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+35,67,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+35,92,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+35,75,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+35,83,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+35,78,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+35,90,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+35,77,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+35,85,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+35,89,1,"Trải nghiệm không như ý, quá xô bồ và dịch vụ thiếu chuyên nghiệp.",True
+35,74,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+36,10,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+36,8,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+36,4,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+36,5,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+36,9,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+36,7,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+36,6,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+36,20,1,"Trải nghiệm không như ý, quá xô bồ và dịch vụ thiếu chuyên nghiệp.",True
+36,29,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+36,21,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+36,3,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+36,26,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+37,35,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+37,47,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+37,62,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+37,58,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+37,51,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+37,53,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+37,39,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+37,43,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+37,52,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+37,48,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+37,49,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+37,37,5,"Món ăn đậm đà bản sắc địa phương, phục vụ nhanh nhẹn và chu đáo.",True
+37,34,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+38,70,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+38,83,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+38,86,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+38,69,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+38,76,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+38,74,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+38,85,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+38,87,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+38,94,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+38,77,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+38,93,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+38,84,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+39,22,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+39,29,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+39,25,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+39,20,3,"Dịch vụ ở mức trung bình, vào giờ cao điểm phải xếp hàng khá lâu.",True
+39,5,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+39,31,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+39,13,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+39,28,3,"Dịch vụ ở mức trung bình, vào giờ cao điểm phải xếp hàng khá lâu.",True
+39,6,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+39,24,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+39,27,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+39,23,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+39,15,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+39,2,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+39,14,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+40,39,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+40,55,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+40,60,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+40,49,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+40,62,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+40,36,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+40,42,5,"Món ăn đậm đà bản sắc địa phương, phục vụ nhanh nhẹn và chu đáo.",True
+40,35,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+40,38,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+40,41,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+40,47,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+40,61,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+40,37,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+40,46,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+41,92,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+41,68,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+41,89,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+41,74,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+41,72,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+41,93,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+41,95,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+41,66,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+41,96,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+41,78,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+41,85,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+41,84,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+41,79,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+41,67,5,"Món ăn đậm đà bản sắc địa phương, phục vụ nhanh nhẹn và chu đáo.",True
+42,7,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+42,25,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+42,19,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+42,24,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+42,31,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+42,11,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+42,5,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+42,2,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+42,12,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+42,18,5,"Món ăn đậm đà bản sắc địa phương, phục vụ nhanh nhẹn và chu đáo.",True
+42,27,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+43,50,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+43,36,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+43,58,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+43,44,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+43,46,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+43,45,3,"Địa điểm tạm ổn, cảnh quan ở mức vừa phải, giá vé hơi cao so với trải nghiệm.",True
+43,56,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+43,47,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+43,59,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+43,43,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+43,38,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+43,48,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+44,90,3,Không quá đặc sắc nhưng cũng là một trải nghiệm có thể thử.,True
+44,76,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+44,81,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+44,96,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+44,88,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+44,86,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+44,70,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+44,65,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+44,69,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+44,84,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+45,8,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+45,1,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+45,24,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+45,6,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+45,16,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+45,17,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+45,13,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+45,18,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+45,4,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+45,9,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+45,23,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+46,47,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+46,36,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+46,39,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+46,58,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+46,37,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+46,40,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+46,61,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+46,48,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+46,33,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+46,44,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+46,50,1,"Trải nghiệm không như ý, quá xô bồ và dịch vụ thiếu chuyên nghiệp.",True
+46,51,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+46,55,1,"Trải nghiệm không như ý, quá xô bồ và dịch vụ thiếu chuyên nghiệp.",True
+46,64,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+47,79,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+47,76,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+47,81,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+47,93,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+47,74,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+47,67,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+47,73,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+47,71,1,"Trải nghiệm không như ý, quá xô bồ và dịch vụ thiếu chuyên nghiệp.",True
+47,85,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+47,82,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+47,90,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+47,69,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+47,92,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+47,87,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+47,91,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+48,10,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+48,11,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+48,28,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+48,23,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+48,31,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+48,24,4,"Trải nghiệm rất ổn, tuy nhiên cuối tuần hơi đông khách một chút.",True
+48,12,5,"Món ăn đậm đà bản sắc địa phương, phục vụ nhanh nhẹn và chu đáo.",True
+48,13,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+48,5,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+48,26,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+48,17,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+48,18,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+48,4,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+48,30,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+49,36,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+49,42,5,"Món ăn đậm đà bản sắc địa phương, phục vụ nhanh nhẹn và chu đáo.",True
+49,48,1,Thất vọng về chất lượng quản lý và bảo tồn tại điểm đến.,True
+49,52,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+49,59,1,"Trải nghiệm không như ý, quá xô bồ và dịch vụ thiếu chuyên nghiệp.",True
+49,53,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+49,54,5,"Trải nghiệm tuyệt vời, cảnh quan và dịch vụ xuất sắc, nhất định sẽ quay lại!",True
+49,62,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+49,63,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+49,50,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+50,88,2,"Khá đông đúc và thương mại hóa, không đúng với kỳ vọng ban đầu của mình.",True
+50,90,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+50,75,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+50,82,5,"Không gian vô cùng trong lành và thanh bình, rất đáng ghé thăm.",True
+50,76,3,"Dịch vụ ở mức trung bình, vào giờ cao điểm phải xếp hàng khá lâu.",True
+50,89,5,"Điểm đến hấp dẫn, nhiều hoạt động giải trí đặc sắc và sôi động.",True
+50,69,5,"Di tích giàu giá trị lịch sử và văn hóa, được bảo tồn rất tốt.",True
+50,71,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+50,84,4,Rất phù hợp cho chuyến đi cùng gia đình hoặc bạn bè.,True
+50,81,4,"Điểm đến đẹp và sạch sẽ, không khí thoải mái, dịch vụ tốt.",True
+50,77,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
+50,87,2,"Ồn ào và chen chúc, dịch vụ chưa thực sự chu đáo so với chi phí.",True
+50,66,4,"Cảnh quan ấn tượng, chụp ảnh đẹp, đồ ăn và giá vé hợp lý.",True
