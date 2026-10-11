@@ -1,94 +1,46 @@
 import numpy as np
 
-try:
-    from sklearn.metrics.pairwise import cosine_similarity
-except Exception:
-    def cosine_similarity(u, v):
-        u_arr = np.atleast_2d(u)
-        v_arr = np.atleast_2d(v)
-        dot = np.dot(u_arr, v_arr.T)
-        norm_u = np.linalg.norm(u_arr, axis=1, keepdims=True)
-        norm_v = np.linalg.norm(v_arr, axis=1, keepdims=True)
-        denom = norm_u * norm_v.T
-        with np.errstate(divide="ignore", invalid="ignore"):
-            res = np.where(denom > 0, dot / denom, 0.0)
-        return res
-
 from app.contracts import INTERESTS, STYLE_PRICE_TARGET, Destination, TripRequest
-
-
-def build_user_vector(request: TripRequest) -> list[float]:
-    """
-    Xây dựng vector đặc trưng người dùng 11 chiều:
-    - 9 chiều đầu: sở thích theo INTERESTS
-    - Chiều 10: giá theo STYLE_PRICE_TARGET
-    - Chiều 11: độ ồn (0.0 nếu có yen_tinh, ngược lại 0.5)
-    """
-    vec = []
-    # 9 chiều đầu: INTERESTS
-    user_interests_set = set(request.interests)
-    for interest in INTERESTS:
-        vec.append(1.0 if interest in user_interests_set else 0.0)
-
-    # Chiều 10: giá
-    target_price = STYLE_PRICE_TARGET.get(request.travel_style, 2)
-    vec.append((target_price - 1.0) / 3.0)
-
-    # Chiều 11: độ ồn
-    noise_target = 0.0 if "yen_tinh" in user_interests_set else 0.5
-    vec.append(noise_target)
-
-    return vec
-
-
-def build_item_vector(d: Destination) -> list[float]:
-    """
-    Xây dựng vector đặc trưng địa điểm 11 chiều:
-    - 9 chiều đầu: tags thuộc INTERESTS
-    - Chiều 10: (price_range - 1) / 3
-    - Chiều 11: (noise_level - 1) / 4
-    """
-    vec = []
-    # 9 chiều đầu: INTERESTS
-    item_tags_set = set(d.tags)
-    for interest in INTERESTS:
-        vec.append(1.0 if interest in item_tags_set else 0.0)
-
-    # Chiều 10: giá
-    vec.append((float(d.price_range) - 1.0) / 3.0)
-
-    # Chiều 11: độ ồn
-    vec.append((float(d.noise_level) - 1.0) / 4.0)
-
-    return vec
 
 
 def score(request: TripRequest, destinations: list[Destination]) -> dict[int, float]:
     """
-    Tính cosine similarity giữa request và từng địa điểm.
-    destination_id -> điểm trong [0, 1]. Nếu vector toàn 0 -> 0.0.
+    Tính điểm Content-Based theo đề xuất Finding #12 của Lead Architect:
+    - Cosine similarity trên 9 chiều sở thích INTERESTS
+    - price_fit = 1 - abs(price_range - STYLE_PRICE_TARGET[style]) / 3
+    - noise_fit = 1 - abs(noise_level - noise_target) / 4 (target=1 nếu yen_tinh, else 3)
+    - cb = 0.7 * cos + 0.15 * price_fit + 0.15 * noise_fit
     """
     if not destinations:
         return {}
 
-    user_vec = build_user_vector(request)
-    u_arr = np.array(user_vec).reshape(1, -1)
+    user_interests_set = set(request.interests)
+    u_interests = np.array([1.0 if i in user_interests_set else 0.0 for i in INTERESTS], dtype=float)
+    norm_u = np.linalg.norm(u_interests)
 
-    # Kiểm tra user vector có toàn 0 không
-    if np.all(u_arr == 0):
-        return {d.id: 0.0 for d in destinations}
+    target_price = STYLE_PRICE_TARGET.get(request.travel_style, 2)
+    noise_target = 1.0 if "yen_tinh" in user_interests_set else 3.0
 
     results = {}
     for d in destinations:
-        item_vec = build_item_vector(d)
-        i_arr = np.array(item_vec).reshape(1, -1)
-        if np.all(i_arr == 0):
-            results[d.id] = 0.0
-            continue
+        item_tags_set = set(d.tags)
+        i_interests = np.array([1.0 if i in item_tags_set else 0.0 for i in INTERESTS], dtype=float)
+        norm_i = np.linalg.norm(i_interests)
 
-        sim = cosine_similarity(u_arr, i_arr)[0][0]
-        # Kẹp trong [0, 1] và làm tròn số float
-        clamped_sim = max(0.0, min(1.0, float(sim)))
-        results[d.id] = clamped_sim
+        if norm_u > 0 and norm_i > 0:
+            cos_sim = float(np.dot(u_interests, i_interests) / (norm_u * norm_i))
+            cos_sim = max(0.0, min(1.0, cos_sim))
+        else:
+            cos_sim = 0.0
+
+        price_fit = 1.0 - abs(float(d.price_range) - float(target_price)) / 3.0
+        price_fit = max(0.0, min(1.0, price_fit))
+
+        noise_fit = 1.0 - abs(float(d.noise_level) - float(noise_target)) / 4.0
+        noise_fit = max(0.0, min(1.0, noise_fit))
+
+        cb = 0.7 * cos_sim + 0.15 * price_fit + 0.15 * noise_fit
+        results[d.id] = round(max(0.0, min(1.0, cb)), 4)
 
     return results
+

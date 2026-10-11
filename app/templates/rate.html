@@ -16,6 +16,7 @@
                 </div>
 
                 <form action="/trips/{{ trip.id }}/rate" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     {% for dest in destinations %}
                     <div class="card mb-4 border rounded-3 p-3">
                         <div class="d-flex align-items-center mb-3">
@@ -44,7 +45,7 @@
 
                         <div>
                             <label for="review_{{ dest.id }}" class="form-label fw-semibold">Nhận xét trải nghiệm:</label>
-                            <textarea class="form-control" id="review_{{ dest.id }}" name="review_{{ dest.id }}" rows="2" placeholder="Chia sẻ cảm nhận, không gian, dịch vụ hoặc lời khuyên..."></textarea>
+                            <textarea class="form-control" id="review_{{ dest.id }}" name="review_{{ dest.id }}" rows="2" maxlength="1000" placeholder="Chia sẻ cảm nhận, không gian, dịch vụ hoặc lời khuyên... (tối đa 1000 ký tự)"></textarea>
                         </div>
                     </div>
                     {% endfor %}

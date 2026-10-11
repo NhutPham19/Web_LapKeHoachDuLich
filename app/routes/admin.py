@@ -15,7 +15,7 @@ def stats_view():
 @admin_bp.route("/destinations")
 @admin_required
 def destinations_view():
-    dests = current_app.repo.list_destinations()
+    dests = current_app.repo.list_destinations(active_only=False)
     return render_template("admin/destinations.html", destinations=dests)
 
 
@@ -23,6 +23,10 @@ def destinations_view():
 @admin_required
 def new_destination():
     if request.method == "POST":
+        img = request.form.get("image_url", "").strip()
+        if img and not (img.startswith("http://") or img.startswith("https://")):
+            img = ""
+
         data = {
             "name": request.form.get("name", "").strip(),
             "province": request.form.get("province", "").strip(),
@@ -30,11 +34,14 @@ def new_destination():
             "latitude": float(request.form.get("latitude", 0)),
             "longitude": float(request.form.get("longitude", 0)),
             "description": request.form.get("description", "").strip(),
-            "image_url": request.form.get("image_url", "").strip(),
+            "image_url": img,
+            "category_id": int(request.form.get("category_id")) if request.form.get("category_id") else None,
             "price_range": int(request.form.get("price_range", 1)),
             "noise_level": int(request.form.get("noise_level", 3)),
             "duration_hours": float(request.form.get("duration_hours", 1.0)),
             "is_outdoor": request.form.get("is_outdoor") == "1",
+            "ticket_price": int(request.form.get("ticket_price", 0)),
+            "is_active": True,
             "tags": tuple(request.form.getlist("tags")),
             "opening_hours": None,
         }
@@ -60,6 +67,10 @@ def edit_destination_view(dest_id: int):
 @admin_bp.route("/destinations/<int:dest_id>", methods=["POST"])
 @admin_required
 def update_destination(dest_id: int):
+    img = request.form.get("image_url", "").strip()
+    if img and not (img.startswith("http://") or img.startswith("https://")):
+        img = ""
+
     data = {
         "name": request.form.get("name", "").strip(),
         "province": request.form.get("province", "").strip(),
@@ -67,11 +78,14 @@ def update_destination(dest_id: int):
         "latitude": float(request.form.get("latitude", 0)),
         "longitude": float(request.form.get("longitude", 0)),
         "description": request.form.get("description", "").strip(),
-        "image_url": request.form.get("image_url", "").strip(),
+        "image_url": img,
+        "category_id": int(request.form.get("category_id")) if request.form.get("category_id") else None,
         "price_range": int(request.form.get("price_range", 1)),
         "noise_level": int(request.form.get("noise_level", 3)),
         "duration_hours": float(request.form.get("duration_hours", 1.0)),
         "is_outdoor": request.form.get("is_outdoor") == "1",
+        "ticket_price": int(request.form.get("ticket_price", 0)),
+        "is_active": request.form.get("is_active") == "1",
         "tags": tuple(request.form.getlist("tags")),
         "opening_hours": None,
     }
@@ -84,7 +98,7 @@ def update_destination(dest_id: int):
 @admin_required
 def delete_destination(dest_id: int):
     current_app.repo.delete_destination(dest_id)
-    flash("Đã xóa địa điểm.", "info")
+    flash("Đã chuyển địa điểm sang trạng thái ẩn (xóa mềm).", "info")
     return redirect(url_for("admin.destinations_view"))
 
 
@@ -115,3 +129,15 @@ def categories_view():
 
     cats = current_app.repo.list_categories()
     return render_template("admin/categories.html", categories=cats)
+
+
+@admin_bp.route("/categories/<int:cat_id>/delete", methods=["POST"])
+@admin_required
+def delete_category_view(cat_id: int):
+    ok = current_app.repo.delete_category(cat_id)
+    if not ok:
+        flash("Không thể xóa danh mục vì vẫn còn địa điểm trực thuộc đang hoạt động.", "danger")
+    else:
+        flash("Đã xóa danh mục thành công.", "info")
+    return redirect(url_for("admin.categories_view"))
+

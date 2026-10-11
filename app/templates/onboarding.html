@@ -14,6 +14,7 @@
                 </div>
 
                 <form action="/onboarding" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     <!-- Sở thích (chọn nhiều) -->
                     <div class="mb-4">
                         <label class="form-label fw-bold fs-5 mb-3">

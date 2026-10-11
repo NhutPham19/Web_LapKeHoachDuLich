@@ -40,6 +40,8 @@ CREATE TABLE IF NOT EXISTS destinations (
     noise_level INTEGER NOT NULL CHECK (noise_level BETWEEN 1 AND 5),
     duration_hours DOUBLE PRECISION NOT NULL DEFAULT 1.0,
     is_outdoor BOOLEAN NOT NULL DEFAULT TRUE,
+    ticket_price INTEGER NOT NULL DEFAULT 0,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
     opening_hours JSONB,
     tags JSONB NOT NULL DEFAULT '[]'::jsonb,
     avg_rating DOUBLE PRECISION,
@@ -57,6 +59,8 @@ CREATE TABLE IF NOT EXISTS trips (
     budget BIGINT NOT NULL,
     num_people INTEGER NOT NULL,
     travel_style VARCHAR(50) NOT NULL,
+    interests JSONB NOT NULL DEFAULT '[]'::jsonb,
+    warnings JSONB NOT NULL DEFAULT '[]'::jsonb,
     status VARCHAR(50) NOT NULL DEFAULT 'draft',
     is_public BOOLEAN NOT NULL DEFAULT FALSE,
     share_token VARCHAR(100) UNIQUE,
@@ -71,6 +75,7 @@ CREATE TABLE IF NOT EXISTS itinerary_items (
     time_slot VARCHAR(20) NOT NULL,
     order_in_slot INTEGER NOT NULL,
     estimated_cost BIGINT NOT NULL DEFAULT 0,
+    travel_km_from_prev DOUBLE PRECISION NOT NULL DEFAULT 0.0,
     notes TEXT NOT NULL DEFAULT ''
 );
 
@@ -82,7 +87,8 @@ CREATE TABLE IF NOT EXISTS ratings (
     score INTEGER NOT NULL CHECK (score BETWEEN 1 AND 5),
     review_text TEXT NOT NULL DEFAULT '',
     is_approved BOOLEAN NOT NULL DEFAULT FALSE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT uq_user_trip_dest UNIQUE (user_id, trip_id, destination_id)
 );
 
 CREATE TABLE IF NOT EXISTS weather_cache (
@@ -91,6 +97,13 @@ CREATE TABLE IF NOT EXISTS weather_cache (
     weather_data JSONB NOT NULL,
     cached_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Hỗ trợ nâng cấp bảng đã tồn tại (Idempotent ALTER)
+ALTER TABLE destinations ADD COLUMN IF NOT EXISTS ticket_price INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE destinations ADD COLUMN IF NOT EXISTS is_active BOOLEAN NOT NULL DEFAULT TRUE;
+ALTER TABLE trips ADD COLUMN IF NOT EXISTS interests JSONB NOT NULL DEFAULT '[]'::jsonb;
+ALTER TABLE trips ADD COLUMN IF NOT EXISTS warnings JSONB NOT NULL DEFAULT '[]'::jsonb;
+ALTER TABLE itinerary_items ADD COLUMN IF NOT EXISTS travel_km_from_prev DOUBLE PRECISION NOT NULL DEFAULT 0.0;
 
 -- Chỉ mục hỗ trợ truy vấn nhanh
 CREATE INDEX IF NOT EXISTS idx_destinations_province ON destinations(province);

@@ -16,6 +16,7 @@
                 </div>
 
                 <form action="/trips/new" method="POST" id="tripForm">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     <div class="row g-4">
                         <!-- Điểm đến -->
                         <div class="col-md-6">
@@ -36,7 +37,7 @@
                                 <i class="bi bi-calendar-event text-primary me-1"></i>Ngày bắt đầu chuyến đi
                             </label>
                             <input type="date" class="form-control form-control-lg" id="start_date" name="start_date" required>
-                            <small class="text-muted">Ngày khởi hành phải từ hôm nay trở đi</small>
+                            <small class="text-muted">Ngày khởi hành từ hôm nay và trong vòng 1 năm</small>
                         </div>
 
                         <!-- Số ngày đi -->
@@ -62,8 +63,8 @@
                             <label for="budget" class="form-label fw-bold">
                                 <i class="bi bi-cash-stack text-success me-1"></i>Tổng ngân sách (VNĐ)
                             </label>
-                            <input type="number" class="form-control form-control-lg" id="budget" name="budget" min="100000" step="50000" value="5000000" required>
-                            <small class="text-muted">Tối thiểu 100,000 VNĐ</small>
+                            <input type="number" class="form-control form-control-lg" id="budget" name="budget" min="100000" max="1000000000" step="50000" value="5000000" required>
+                            <small class="text-muted">Tối thiểu 300,000 đ/người/ngày, tối đa 1 tỷ</small>
                         </div>
 
                         <!-- Phong cách du lịch -->

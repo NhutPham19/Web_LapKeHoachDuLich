@@ -107,8 +107,11 @@ def parse_forecast(raw: dict, start_date: date, days: int) -> list[WeatherDay]:
             if "humidity" in main:
                 humidities.append(float(main["humidity"]))
 
-            # Kiểm tra thời tiết nguy hiểm
-            if (200 <= w_id <= 299) or (wind_speed >= 17.0):
+            # Kiểm tra thời tiết nguy hiểm (Finding #15)
+            # 200-299: Dông bão
+            # 503-504: Mưa rất to / cực to
+            # wind_speed >= 17.0: Gió giật / bão
+            if (200 <= w_id <= 299) or (503 <= w_id <= 504) or (wind_speed >= 17.0):
                 is_severe = True
 
             # Mô tả theo mốc có pop cao nhất
@@ -116,11 +119,20 @@ def parse_forecast(raw: dict, start_date: date, days: int) -> list[WeatherDay]:
                 highest_pop = pop
                 highest_pop_desc = desc
 
-        rain_prob = {
-            "morning": max(rain_by_slot["morning"]) if rain_by_slot["morning"] else 0.0,
-            "afternoon": max(rain_by_slot["afternoon"]) if rain_by_slot["afternoon"] else 0.0,
-            "evening": max(rain_by_slot["evening"]) if rain_by_slot["evening"] else 0.0,
-        }
+        if is_severe:
+            # Ngày có cảnh báo nguy hiểm: xem như 100% mưa ở mọi slot để ưu tiên indoor (Finding #15)
+            rain_prob: dict[str, Optional[float]] = {
+                "morning": 1.0,
+                "afternoon": 1.0,
+                "evening": 1.0,
+            }
+        else:
+            # Slot không có mốc dự báo thì trả None (Finding #15)
+            rain_prob = {
+                "morning": max(rain_by_slot["morning"]) if rain_by_slot["morning"] else None,
+                "afternoon": max(rain_by_slot["afternoon"]) if rain_by_slot["afternoon"] else None,
+                "evening": max(rain_by_slot["evening"]) if rain_by_slot["evening"] else None,
+            }
 
         t_min_final = min(temps_min) if temps_min else 20.0
         t_max_final = max(temps_max) if temps_max else 25.0
@@ -153,27 +165,39 @@ def get_forecast(
 ) -> list[WeatherDay]:
     """
     Lấy dự báo thời tiết có hỗ trợ bộ nhớ đệm (TTL 3 giờ).
-    Nếu cache còn hạn: không gọi fetch.
+    - Nếu cache còn hạn: không gọi fetch.
+    - Nếu fetch lỗi nhưng có cache cũ: fallback dùng cache cũ (Finding #16).
+    - Nếu fetch lỗi và không có cache: raise Exception.
     """
-    curr_now = now or datetime.now()
+    curr_now = now or datetime.now(timezone.utc)
     raw_data = None
+    cached_payload = None
 
     if cache_get:
         cached = cache_get(province)
         if cached:
             c_data, cached_at = cached
-            # Kiểm tra TTL
-            if cached_at.tzinfo is not None and curr_now.tzinfo is None:
-                cached_at = cached_at.replace(tzinfo=None)
-            elif cached_at.tzinfo is None and curr_now.tzinfo is not None:
-                curr_now = curr_now.replace(tzinfo=None)
+            cached_payload = c_data
+            # Đồng bộ timezone khi so sánh aware vs naive
+            t_now = curr_now
+            t_cache = cached_at
+            if t_cache.tzinfo is None and t_now.tzinfo is not None:
+                t_cache = t_cache.replace(tzinfo=timezone.utc)
+            elif t_cache.tzinfo is not None and t_now.tzinfo is None:
+                t_now = t_now.replace(tzinfo=timezone.utc)
 
-            if cached_at + timedelta(hours=WEATHER_CACHE_TTL_HOURS) > curr_now:
+            if t_cache + timedelta(hours=WEATHER_CACHE_TTL_HOURS) > t_now:
                 raw_data = c_data
 
     if raw_data is None:
-        raw_data = fetch(province)
-        if cache_put:
-            cache_put(province, raw_data)
+        try:
+            raw_data = fetch(province)
+            if cache_put:
+                cache_put(province, raw_data)
+        except Exception:
+            if cached_payload is not None:
+                raw_data = cached_payload
+            else:
+                raise
 
     return parse_forecast(raw_data, start_date, days)

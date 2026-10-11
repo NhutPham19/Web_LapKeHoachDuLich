@@ -21,6 +21,7 @@
                     <tr>
                         <th class="ps-4">Tên địa điểm</th>
                         <th>Tỉnh/Thành</th>
+                        <th>Giá vé</th>
                         <th>Khoảng giá</th>
                         <th>Thời lượng</th>
                         <th>Không gian</th>
@@ -36,6 +37,7 @@
                             <div class="small text-muted">{{ d.address }}</div>
                         </td>
                         <td><span class="badge bg-primary-subtle text-primary">{{ d.province }}</span></td>
+                        <td><strong>{{ "{:,.0f}".format(d.ticket_price or 0) }} đ</strong></td>
                         <td>Mức {{ d.price_range }}/4</td>
                         <td>{{ d.duration_hours }}h</td>
                         <td>
@@ -48,7 +50,8 @@
                         <td>{{ d.avg_rating or 'Chưa có' }}</td>
                         <td class="text-end pe-4">
                             <a href="/admin/destinations/{{ d.id }}/edit" class="btn btn-sm btn-outline-secondary me-1"><i class="bi bi-pencil"></i></a>
-                            <form action="/admin/destinations/{{ d.id }}/delete" method="POST" class="d-inline" onsubmit="return confirm('Xác nhận xóa địa điểm này?');">
+                            <form action="/admin/destinations/{{ d.id }}/delete" method="POST" class="d-inline" onsubmit="return confirm('Xác nhận ẩn địa điểm này?');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                                 <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
                             </form>
                         </td>

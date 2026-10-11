@@ -17,8 +17,8 @@ def register():
         if not email or "@" not in email:
             flash("Vui lòng nhập địa chỉ email hợp lệ.", "danger")
             return render_template("register.html"), 400
-        if len(password) < 6:
-            flash("Mật khẩu phải có độ dài tối thiểu 6 ký tự.", "danger")
+        if len(password) < 8:
+            flash("Mật khẩu phải có độ dài tối thiểu 8 ký tự.", "danger")
             return render_template("register.html"), 400
         if not full_name:
             flash("Vui lòng nhập họ và tên của bạn.", "danger")
@@ -31,6 +31,12 @@ def register():
 
         pwd_hash = generate_password_hash(password)
         user_id = current_app.repo.create_user(email, pwd_hash, full_name)
+
+        # Chống session fixation
+        csrf_tok = session.get("csrf_token")
+        session.clear()
+        if csrf_tok:
+            session["csrf_token"] = csrf_tok
 
         session["user"] = {
             "id": user_id,
@@ -55,6 +61,12 @@ def login():
             flash("Email hoặc mật khẩu không chính xác.", "danger")
             return render_template("login.html"), 400
 
+        # Chống session fixation
+        csrf_tok = session.get("csrf_token")
+        session.clear()
+        if csrf_tok:
+            session["csrf_token"] = csrf_tok
+
         session["user"] = {
             "id": user["id"],
             "email": user["email"],
@@ -62,6 +74,10 @@ def login():
             "is_admin": user.get("is_admin", False),
         }
         flash(f"Chào mừng trở lại, {user['full_name']}!", "success")
+
+        next_url = request.args.get("next")
+        if next_url and next_url.startswith("/") and not next_url.startswith("//"):
+            return redirect(next_url)
         return redirect(url_for("trips.list_trips_view"))
 
     return render_template("login.html")

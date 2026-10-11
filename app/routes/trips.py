@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime, timedelta, timezone
 from flask import (
     Blueprint,
     abort,
@@ -15,13 +15,22 @@ from flask import (
 from app.auth import login_required
 from app.contracts import (
     INTERESTS,
+    MAX_BUDGET,
+    MIN_BUDGET_PER_PERSON_DAY,
     PROVINCES,
+    TICKET_PRICE_BY_RANGE,
+    TIME_SLOTS,
     TRAVEL_STYLES,
     TripRequest,
 )
 from app.services import planner, weather
 
 trips_bp = Blueprint("trips", __name__)
+
+
+def today_vn() -> date:
+    """Trả về ngày hiện tại theo múi giờ Việt Nam (UTC+7)."""
+    return datetime.now(timezone(timedelta(hours=7))).date()
 
 
 @trips_bp.route("/trips")
@@ -45,15 +54,24 @@ def new_trip_view():
         interests = tuple(dict.fromkeys(request.form.getlist("interests")))
         travel_style = request.form.get("travel_style", "").strip()
 
-        # Validate theo 1.G.7
+        # Validate theo 1.G.7 & Finding #22: giới hạn số lượng trip draft
+        existing_trips = current_app.repo.list_trips(user_id) if hasattr(current_app.repo, "list_trips") else current_app.repo.list_user_trips(user_id)
+        if sum(1 for t in existing_trips if t.status == "draft") >= 20:
+            flash("Bạn đã đạt giới hạn tối đa 20 chuyến đi bản nháp. Vui lòng hoàn thành hoặc xóa bớt để tạo mới.", "warning")
+            return redirect(url_for("trips.list_trips_view"))
+
         if province not in PROVINCES:
             flash("Tỉnh/thành phố điểm đến không hợp lệ.", "danger")
             return redirect(url_for("trips.new_trip_view"))
 
+        vn_today = today_vn()
         try:
             start_date = date.fromisoformat(start_date_str)
-            if start_date < date.today():
+            if start_date < vn_today:
                 flash("Ngày bắt đầu không được nằm trong quá khứ.", "danger")
+                return redirect(url_for("trips.new_trip_view"))
+            if start_date > vn_today + timedelta(days=365):
+                flash("Ngày bắt đầu không được vượt quá 1 năm tới.", "danger")
                 return redirect(url_for("trips.new_trip_view"))
         except Exception:
             flash("Định dạng ngày bắt đầu không hợp lệ.", "danger")
@@ -69,21 +87,25 @@ def new_trip_view():
             return redirect(url_for("trips.new_trip_view"))
 
         try:
-            budget = int(budget_str)
-            if budget < 100_000:
-                flash("Tổng ngân sách tối thiểu là 100,000 VNĐ.", "danger")
-                return redirect(url_for("trips.new_trip_view"))
-        except Exception:
-            flash("Số tiền ngân sách không hợp lệ.", "danger")
-            return redirect(url_for("trips.new_trip_view"))
-
-        try:
             num_people = int(num_people_str)
             if not (1 <= num_people <= 20):
                 flash("Số lượng người đi phải từ 1 đến 20 người.", "danger")
                 return redirect(url_for("trips.new_trip_view"))
         except Exception:
             flash("Số lượng người không hợp lệ.", "danger")
+            return redirect(url_for("trips.new_trip_view"))
+
+        try:
+            budget = int(budget_str)
+            min_required = num_people * days * MIN_BUDGET_PER_PERSON_DAY
+            if budget < min_required:
+                flash(f"Ngân sách tối thiểu đề xuất là {min_required:,} VNĐ ({MIN_BUDGET_PER_PERSON_DAY:,} VNĐ/người/ngày).", "danger")
+                return redirect(url_for("trips.new_trip_view"))
+            if budget > MAX_BUDGET:
+                flash(f"Ngân sách tối đa không vượt quá {MAX_BUDGET:,} VNĐ.", "danger")
+                return redirect(url_for("trips.new_trip_view"))
+        except Exception:
+            flash("Số tiền ngân sách không hợp lệ.", "danger")
             return redirect(url_for("trips.new_trip_view"))
 
         if not interests or not set(interests).issubset(INTERESTS):
@@ -106,8 +128,8 @@ def new_trip_view():
             user_id=user_id,
         )
 
-        # Lấy dữ liệu từ repo
-        all_dests = current_app.repo.list_destinations()
+        # Lấy dữ liệu từ repo (chỉ lấy địa điểm active)
+        all_dests = current_app.repo.list_destinations(active_only=True)
         approved_ratings = current_app.repo.list_approved_ratings()
 
         # Lấy thời tiết an toàn
@@ -143,10 +165,9 @@ def new_trip_view():
 @login_required
 def trip_detail_view(trip_id: int):
     trip = current_app.repo.get_trip(trip_id)
-    if not trip:
+    # Finding #9: trả 404 cho cả khi không tồn tại hoặc không phải chủ trip
+    if not trip or trip.user_id != session["user"]["id"]:
         abort(404)
-    if trip.user_id != session["user"]["id"]:
-        abort(403)
     return render_template("trip_detail.html", trip=trip, is_owner=True)
 
 
@@ -154,38 +175,69 @@ def trip_detail_view(trip_id: int):
 @login_required
 def delete_trip_view(trip_id: int):
     trip = current_app.repo.get_trip(trip_id)
-    if not trip:
+    if not trip or trip.user_id != session["user"]["id"]:
         abort(404)
-    if trip.user_id != session["user"]["id"]:
-        abort(403)
     current_app.repo.delete_trip(trip_id)
     flash("Đã xóa kế hoạch chuyến đi.", "info")
     return redirect(url_for("trips.list_trips_view"))
 
 
 # -------------------------------------------------------------
-# API Items
+# API Candidates & Items (Finding #3, #11)
 # -------------------------------------------------------------
+@trips_bp.route("/api/trips/<int:trip_id>/candidates")
+@login_required
+def api_trip_candidates(trip_id: int):
+    trip = current_app.repo.get_trip(trip_id)
+    if not trip or trip.user_id != session["user"]["id"]:
+        return {"error": "not_found", "message": "Chuyến đi không tồn tại"}, 404
+
+    # Địa điểm cùng tỉnh chưa có trong trip
+    used_dest_ids = {
+        item.destination.id
+        for day in trip.plan.days
+        for item in day.items
+    }
+    all_dests = current_app.repo.list_destinations(trip.plan.request.province, active_only=True)
+    candidates = [
+        {
+            "id": d.id,
+            "name": d.name,
+            "category_name": d.category_name,
+            "is_outdoor": d.is_outdoor,
+            "duration_hours": d.duration_hours,
+            "ticket_price": d.ticket_price if d.ticket_price > 0 else TICKET_PRICE_BY_RANGE.get(d.price_range, 0),
+            "address": d.address,
+        }
+        for d in all_dests
+        if d.id not in used_dest_ids
+    ]
+    return jsonify(candidates)
+
+
 @trips_bp.route("/api/trips/<int:trip_id>/items", methods=["POST"])
 @login_required
 def api_add_item(trip_id: int):
     trip = current_app.repo.get_trip(trip_id)
-    if not trip:
+    if not trip or trip.user_id != session["user"]["id"]:
         return {"error": "not_found", "message": "Chuyến đi không tồn tại"}, 404
-    if trip.user_id != session["user"]["id"]:
-        return {"error": "forbidden", "message": "Bạn không có quyền chỉnh sửa"}, 403
 
     data = request.get_json() or {}
     dest_id = data.get("destination_id")
     day_num = data.get("day_number", 1)
     slot = data.get("time_slot", "morning")
 
-    dest = current_app.repo.get_destination(dest_id)
-    if not dest:
-        return {"error": "bad_request", "message": "Địa điểm không tồn tại"}, 400
+    if not (1 <= day_num <= trip.plan.request.days):
+        return {"error": "bad_request", "message": "Ngày không hợp lệ"}, 400
+    if slot not in TIME_SLOTS:
+        return {"error": "bad_request", "message": "Buổi trong ngày không hợp lệ"}, 400
 
-    from app.contracts import TICKET_PRICE_BY_RANGE
-    est_cost = TICKET_PRICE_BY_RANGE.get(dest.price_range, 0) * trip.plan.request.num_people
+    dest = current_app.repo.get_destination(dest_id)
+    if not dest or dest.province != trip.plan.request.province or not dest.is_active:
+        return {"error": "bad_request", "message": "Địa điểm không hợp lệ hoặc không cùng tỉnh"}, 400
+
+    ticket = dest.ticket_price if dest.ticket_price > 0 else TICKET_PRICE_BY_RANGE.get(dest.price_range, 0)
+    est_cost = ticket * trip.plan.request.num_people
 
     new_id = current_app.repo.add_item(trip_id, dest_id, day_num, slot, 1, est_cost)
     return jsonify({"id": new_id}), 201
@@ -195,13 +247,23 @@ def api_add_item(trip_id: int):
 @login_required
 def api_update_item(trip_id: int, item_id: int):
     trip = current_app.repo.get_trip(trip_id)
-    if not trip:
+    if not trip or trip.user_id != session["user"]["id"]:
         return {"error": "not_found", "message": "Chuyến đi không tồn tại"}, 404
-    if trip.user_id != session["user"]["id"]:
-        return {"error": "forbidden", "message": "Bạn không có quyền chỉnh sửa"}, 403
 
     data = request.get_json() or {}
-    current_app.repo.update_item(item_id, **data)
+    # Validate fields nếu có
+    if "day_number" in data and not (1 <= data["day_number"] <= trip.plan.request.days):
+        return {"error": "bad_request", "message": "Ngày không hợp lệ"}, 400
+    if "time_slot" in data and data["time_slot"] not in TIME_SLOTS:
+        return {"error": "bad_request", "message": "Buổi không hợp lệ"}, 400
+    if "destination_id" in data:
+        dest = current_app.repo.get_destination(data["destination_id"])
+        if not dest or dest.province != trip.plan.request.province:
+            return {"error": "bad_request", "message": "Địa điểm không cùng tỉnh"}, 400
+        ticket = dest.ticket_price if dest.ticket_price > 0 else TICKET_PRICE_BY_RANGE.get(dest.price_range, 0)
+        data["estimated_cost"] = ticket * trip.plan.request.num_people
+
+    current_app.repo.update_item(trip_id, item_id, data)
     return jsonify({"ok": True}), 200
 
 
@@ -209,12 +271,10 @@ def api_update_item(trip_id: int, item_id: int):
 @login_required
 def api_delete_item(trip_id: int, item_id: int):
     trip = current_app.repo.get_trip(trip_id)
-    if not trip:
+    if not trip or trip.user_id != session["user"]["id"]:
         return {"error": "not_found", "message": "Chuyến đi không tồn tại"}, 404
-    if trip.user_id != session["user"]["id"]:
-        return {"error": "forbidden", "message": "Bạn không có quyền chỉnh sửa"}, 403
 
-    current_app.repo.delete_item(item_id)
+    current_app.repo.delete_item(trip_id, item_id)
     return jsonify({"ok": True}), 200
 
 
@@ -225,10 +285,8 @@ def api_delete_item(trip_id: int, item_id: int):
 @login_required
 def api_share_trip(trip_id: int):
     trip = current_app.repo.get_trip(trip_id)
-    if not trip:
+    if not trip or trip.user_id != session["user"]["id"]:
         return {"error": "not_found", "message": "Chuyến đi không tồn tại"}, 404
-    if trip.user_id != session["user"]["id"]:
-        return {"error": "forbidden", "message": "Bạn không có quyền chia sẻ"}, 403
 
     data = request.get_json() or {}
     is_public = bool(data.get("is_public", False))
@@ -250,10 +308,18 @@ def public_shared_trip_view(share_token: str):
 @login_required
 def api_complete_trip(trip_id: int):
     trip = current_app.repo.get_trip(trip_id)
-    if not trip:
+    if not trip or trip.user_id != session["user"]["id"]:
         return {"error": "not_found", "message": "Chuyến đi không tồn tại"}, 404
-    if trip.user_id != session["user"]["id"]:
-        return {"error": "forbidden", "message": "Bạn không có quyền chỉnh sửa"}, 403
+
+    # Finding #4: chỉ cho phép complete khi đã đến hoặc qua ngày khởi hành
+    if today_vn() < trip.plan.request.start_date:
+        if request.is_json:
+            return {"error": "bad_request", "message": "Chưa đến ngày bắt đầu chuyến đi nên chưa thể hoàn thành."}, 400
+        flash("Chưa đến ngày bắt đầu chuyến đi nên chưa thể đánh dấu hoàn thành.", "warning")
+        return redirect(f"/trips/{trip_id}")
 
     current_app.repo.set_status(trip_id, "completed")
+    if request.is_json:
+        return jsonify({"status": "completed"})
     return redirect(f"/trips/{trip_id}")
+

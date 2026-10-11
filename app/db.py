@@ -116,6 +116,18 @@ class PgRepo:
                 travel_style = next((r[1] for r in rows if r[0] == "travel_style"), None)
                 return {"interests": interests, "travel_style": travel_style}
 
+    def set_user_admin(self, email: str, is_admin: bool = True) -> bool:
+        with self._get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("UPDATE users SET is_admin = %s WHERE email = %s", (is_admin, email))
+                return cur.rowcount > 0
+
+    def ping_db(self) -> bool:
+        with self._get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT 1")
+                return cur.fetchone()[0] == 1
+
     # ---------------------------------------------------------
     # destinations & categories
     # ---------------------------------------------------------
@@ -140,38 +152,31 @@ class PgRepo:
             is_outdoor=bool(row["is_outdoor"]),
             tags=tuple(tags),
             opening_hours=opening,
+            ticket_price=int(row.get("ticket_price") or 0),
+            category_name=row.get("category_name") or "",
+            is_active=bool(row.get("is_active", True)),
             address=row.get("address") or "",
             description=row.get("description") or "",
             image_url=row.get("image_url") or "",
             avg_rating=float(row["avg_rating"]) if row.get("avg_rating") is not None else None,
         )
 
-    def list_destinations(self, province: Optional[str] = None) -> list[Destination]:
+    def list_destinations(self, province: Optional[str] = None, active_only: bool = True) -> list[Destination]:
         with self._get_conn() as conn:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
-                if province:
-                    cur.execute(
-                        """
-                        SELECT id, name, province, address, latitude, longitude,
-                               description, image_url, category_id, price_range,
-                               noise_level, duration_hours, is_outdoor, opening_hours,
-                               tags, avg_rating
-                        FROM destinations WHERE province = %s
-                        ORDER BY id ASC
-                        """,
-                        (province,),
-                    )
-                else:
-                    cur.execute(
-                        """
-                        SELECT id, name, province, address, latitude, longitude,
-                               description, image_url, category_id, price_range,
-                               noise_level, duration_hours, is_outdoor, opening_hours,
-                               tags, avg_rating
-                        FROM destinations
-                        ORDER BY id ASC
-                        """
-                    )
+                query = """
+                    SELECT d.id, d.name, d.province, d.address, d.latitude, d.longitude,
+                           d.description, d.image_url, d.category_id, d.price_range,
+                           d.noise_level, d.duration_hours, d.is_outdoor, d.ticket_price,
+                           d.is_active, d.opening_hours, d.tags, d.avg_rating,
+                           COALESCE(c.name, '') as category_name
+                    FROM destinations d
+                    LEFT JOIN categories c ON d.category_id = c.id
+                    WHERE (%s IS NULL OR d.province = %s)
+                      AND (%s = FALSE OR d.is_active = TRUE)
+                    ORDER BY d.id ASC
+                """
+                cur.execute(query, (province, province, active_only))
                 return [self._row_to_destination(r) for r in cur.fetchall()]
 
     def get_destination(self, destination_id: int) -> Optional[Destination]:
@@ -179,11 +184,14 @@ class PgRepo:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute(
                     """
-                    SELECT id, name, province, address, latitude, longitude,
-                           description, image_url, category_id, price_range,
-                           noise_level, duration_hours, is_outdoor, opening_hours,
-                           tags, avg_rating
-                    FROM destinations WHERE id = %s
+                    SELECT d.id, d.name, d.province, d.address, d.latitude, d.longitude,
+                           d.description, d.image_url, d.category_id, d.price_range,
+                           d.noise_level, d.duration_hours, d.is_outdoor, d.ticket_price,
+                           d.is_active, d.opening_hours, d.tags, d.avg_rating,
+                           COALESCE(c.name, '') as category_name
+                    FROM destinations d
+                    LEFT JOIN categories c ON d.category_id = c.id
+                    WHERE d.id = %s
                     """,
                     (destination_id,),
                 )
@@ -196,6 +204,9 @@ class PgRepo:
         tags = data.get("tags") or []
         tags_json = json.dumps(list(tags))
 
+        ticket_price = int(data.get("ticket_price", 0))
+        is_active = bool(data.get("is_active", True))
+
         with self._get_conn() as conn:
             with conn.cursor() as cur:
                 if destination_id:
@@ -204,8 +215,8 @@ class PgRepo:
                         UPDATE destinations
                         SET name = %s, province = %s, address = %s, latitude = %s, longitude = %s,
                             description = %s, image_url = %s, category_id = %s, price_range = %s,
-                            noise_level = %s, duration_hours = %s, is_outdoor = %s,
-                            opening_hours = %s, tags = %s
+                            noise_level = %s, duration_hours = %s, is_outdoor = %s, ticket_price = %s,
+                            is_active = %s, opening_hours = %s, tags = %s
                         WHERE id = %s
                         """,
                         (
@@ -221,6 +232,8 @@ class PgRepo:
                             int(data["noise_level"]),
                             float(data["duration_hours"]),
                             bool(data.get("is_outdoor", True)),
+                            ticket_price,
+                            is_active,
                             opening_json,
                             tags_json,
                             destination_id,
@@ -233,11 +246,13 @@ class PgRepo:
                         INSERT INTO destinations (
                             name, province, address, latitude, longitude,
                             description, image_url, category_id, price_range,
-                            noise_level, duration_hours, is_outdoor, opening_hours, tags
+                            noise_level, duration_hours, is_outdoor, ticket_price,
+                            is_active, opening_hours, tags
                         ) VALUES (
                             %s, %s, %s, %s, %s,
                             %s, %s, %s, %s,
-                            %s, %s, %s, %s, %s
+                            %s, %s, %s, %s,
+                            %s, %s, %s
                         ) RETURNING id
                         """,
                         (
@@ -253,6 +268,8 @@ class PgRepo:
                             int(data["noise_level"]),
                             float(data["duration_hours"]),
                             bool(data.get("is_outdoor", True)),
+                            ticket_price,
+                            is_active,
                             opening_json,
                             tags_json,
                         ),
@@ -260,9 +277,10 @@ class PgRepo:
                     return cur.fetchone()[0]
 
     def delete_destination(self, destination_id: int) -> None:
+        # Finding #23: Xóa mềm
         with self._get_conn() as conn:
             with conn.cursor() as cur:
-                cur.execute("DELETE FROM destinations WHERE id = %s", (destination_id,))
+                cur.execute("UPDATE destinations SET is_active = FALSE WHERE id = %s", (destination_id,))
 
     def list_categories(self) -> list[dict]:
         with self._get_conn() as conn:
@@ -286,26 +304,38 @@ class PgRepo:
                     )
                     return cur.fetchone()[0]
 
-    def delete_category(self, category_id: int) -> None:
+    def delete_category(self, category_id: int) -> bool:
+        # Finding #23: từ chối xóa nếu còn địa điểm active
         with self._get_conn() as conn:
             with conn.cursor() as cur:
+                cur.execute(
+                    "SELECT COUNT(*) FROM destinations WHERE category_id = %s AND is_active = TRUE",
+                    (category_id,),
+                )
+                if cur.fetchone()[0] > 0:
+                    return False
                 cur.execute("DELETE FROM categories WHERE id = %s", (category_id,))
+                return True
 
     # ---------------------------------------------------------
     # trips & itinerary items
     # ---------------------------------------------------------
     def save_trip(self, user_id: int, title: str, plan: TripPlan) -> int:
         req = plan.request
+        interests_json = json.dumps(list(req.interests))
+        warnings_json = json.dumps(list(plan.warnings))
         with self._get_conn() as conn:
             with conn.cursor() as cur:
                 cur.execute(
                     """
                     INSERT INTO trips (
                         user_id, title, destination_province, start_date, end_date,
-                        total_days, budget, num_people, travel_style, status, is_public
+                        total_days, budget, num_people, travel_style, interests,
+                        warnings, status, is_public
                     ) VALUES (
                         %s, %s, %s, %s, %s,
-                        %s, %s, %s, %s, 'draft', FALSE
+                        %s, %s, %s, %s, %s,
+                        %s, 'draft', FALSE
                     ) RETURNING id
                     """,
                     (
@@ -318,6 +348,8 @@ class PgRepo:
                         req.budget,
                         req.num_people,
                         req.travel_style,
+                        interests_json,
+                        warnings_json,
                     ),
                 )
                 trip_id = cur.fetchone()[0]
@@ -328,8 +360,8 @@ class PgRepo:
                             """
                             INSERT INTO itinerary_items (
                                 trip_id, destination_id, day_number, time_slot,
-                                order_in_slot, estimated_cost, notes
-                            ) VALUES (%s, %s, %s, %s, %s, %s, %s)
+                                order_in_slot, estimated_cost, travel_km_from_prev, notes
+                            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                             """,
                             (
                                 trip_id,
@@ -338,6 +370,7 @@ class PgRepo:
                                 item.time_slot,
                                 item.order_in_slot,
                                 item.estimated_cost,
+                                getattr(item, "travel_km_from_prev", 0.0),
                                 item.notes,
                             ),
                         )
@@ -349,8 +382,8 @@ class PgRepo:
                 cur.execute(
                     """
                     SELECT id, user_id, title, destination_province, start_date,
-                           total_days, budget, num_people, travel_style, status,
-                           is_public, share_token
+                           total_days, budget, num_people, travel_style, interests,
+                           warnings, status, is_public, share_token
                     FROM trips WHERE id = %s
                     """,
                     (trip_id,),
@@ -359,17 +392,19 @@ class PgRepo:
                 if not trip_row:
                     return None
 
-                # Lấy items
+                # Lấy items kèm category_name, ticket_price, is_active, travel_km_from_prev
                 cur.execute(
                     """
                     SELECT i.id, i.trip_id, i.destination_id, i.day_number, i.time_slot,
-                           i.order_in_slot, i.estimated_cost, i.notes,
+                           i.order_in_slot, i.estimated_cost, i.travel_km_from_prev, i.notes,
                            d.id as d_id, d.name, d.province, d.address, d.latitude, d.longitude,
                            d.description, d.image_url, d.category_id, d.price_range,
-                           d.noise_level, d.duration_hours, d.is_outdoor, d.opening_hours,
-                           d.tags, d.avg_rating
+                           d.noise_level, d.duration_hours, d.is_outdoor, d.ticket_price,
+                           d.is_active, d.opening_hours, d.tags, d.avg_rating,
+                           COALESCE(c.name, '') as category_name
                     FROM itinerary_items i
                     JOIN destinations d ON i.destination_id = d.id
+                    LEFT JOIN categories c ON d.category_id = c.id
                     WHERE i.trip_id = %s
                     ORDER BY i.day_number ASC, i.time_slot ASC, i.order_in_slot ASC
                     """,
@@ -377,7 +412,6 @@ class PgRepo:
                 )
                 item_rows = cur.fetchall()
 
-                # Tái cấu trúc TripPlan
                 days_dict = {}
                 for r in item_rows:
                     dest = self._row_to_destination({
@@ -394,9 +428,12 @@ class PgRepo:
                         "noise_level": r["noise_level"],
                         "duration_hours": r["duration_hours"],
                         "is_outdoor": r["is_outdoor"],
+                        "ticket_price": r.get("ticket_price") or 0,
+                        "is_active": r.get("is_active", True),
                         "opening_hours": r["opening_hours"],
                         "tags": r["tags"],
                         "avg_rating": r["avg_rating"],
+                        "category_name": r["category_name"],
                     })
                     item = ItineraryItem(
                         destination=dest,
@@ -404,6 +441,7 @@ class PgRepo:
                         time_slot=r["time_slot"],
                         order_in_slot=r["order_in_slot"],
                         estimated_cost=r["estimated_cost"],
+                        travel_km_from_prev=float(r.get("travel_km_from_prev") or 0.0),
                         notes=r["notes"],
                         id=r["id"],
                     )
@@ -417,12 +455,11 @@ class PgRepo:
                     items_tuple = tuple(days_dict.get(d_num, []))
                     day_plans.append(DayPlan(day_number=d_num, date=d_date, items=items_tuple, weather=None))
 
-                # Lấy sở thích user
-                cur.execute(
-                    "SELECT preference_value FROM user_preferences WHERE user_id = %s AND preference_type = 'interest'",
-                    (trip_row["user_id"],),
-                )
-                user_interests = tuple(r["preference_value"] for r in cur.fetchall()) or ("thien_nhien",)
+                # Lấy sở thích từ trip.interests (Finding #20)
+                raw_interests = trip_row.get("interests")
+                if isinstance(raw_interests, str):
+                    raw_interests = json.loads(raw_interests)
+                user_interests = tuple(raw_interests) if raw_interests else ("thien_nhien",)
 
                 req = TripRequest(
                     province=trip_row["destination_province"],
@@ -435,21 +472,27 @@ class PgRepo:
                     user_id=trip_row["user_id"],
                 )
 
-                # Cost Breakdown tính nhanh
                 from app.contracts import BUDGET_SPLIT
                 b = trip_row["budget"]
                 alloc = {k: round(b * BUDGET_SPLIT[k]) for k in ("luu_tru", "an_uong", "di_chuyen", "ve_vao_cua")}
                 alloc["du_phong"] = b - sum(alloc.values())
                 t_est = sum(i["estimated_cost"] for i in item_rows)
+                per_day_alloc = {k: alloc[k] // total_days for k in alloc}
                 cost = CostBreakdown(
                     budget=b,
                     per_day=b // total_days,
                     allocation=alloc,
                     tickets_estimated=t_est,
                     within_budget=t_est <= alloc["ve_vao_cua"],
+                    per_day_allocation=per_day_alloc,
                 )
 
-                plan = TripPlan(request=req, days=tuple(day_plans), cost=cost, warnings=())
+                raw_warnings = trip_row.get("warnings")
+                if isinstance(raw_warnings, str):
+                    raw_warnings = json.loads(raw_warnings)
+                warnings_tuple = tuple(raw_warnings) if raw_warnings else ()
+
+                plan = TripPlan(request=req, days=tuple(day_plans), cost=cost, warnings=warnings_tuple)
                 return TripRecord(
                     id=trip_row["id"],
                     user_id=trip_row["user_id"],
@@ -489,41 +532,46 @@ class PgRepo:
 
     def add_item(
         self, trip_id: int, destination_id: int, day_number: int,
-        time_slot: str, order_in_slot: int, estimated_cost: int
+        time_slot: str, order_in_slot: int, estimated_cost: int,
+        travel_km_from_prev: float = 0.0, notes: str = ""
     ) -> int:
         with self._get_conn() as conn:
             with conn.cursor() as cur:
                 cur.execute(
                     """
                     INSERT INTO itinerary_items (
-                        trip_id, destination_id, day_number, time_slot, order_in_slot, estimated_cost
-                    ) VALUES (%s, %s, %s, %s, %s, %s)
+                        trip_id, destination_id, day_number, time_slot,
+                        order_in_slot, estimated_cost, travel_km_from_prev, notes
+                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                     RETURNING id
                     """,
-                    (trip_id, destination_id, day_number, time_slot, order_in_slot, estimated_cost),
+                    (trip_id, destination_id, day_number, time_slot, order_in_slot, estimated_cost, travel_km_from_prev, notes),
                 )
                 return cur.fetchone()[0]
 
-    def update_item(self, item_id: int, **fields) -> None:
-        valid_cols = {"day_number", "time_slot", "order_in_slot", "destination_id", "estimated_cost", "notes"}
+    def update_item(self, trip_id: int, item_id: int, fields: dict) -> None:
+        # Finding #3: Ràng buộc trip_id và whitelist các trường
+        valid_cols = {"day_number", "time_slot", "order_in_slot", "destination_id", "estimated_cost", "travel_km_from_prev", "notes"}
         updates = {k: v for k, v in fields.items() if k in valid_cols and v is not None}
         if not updates:
             return
 
         set_clause = ", ".join(f"{col} = %s" for col in updates)
         values = list(updates.values())
-        values.append(item_id)
+        values.extend([item_id, trip_id])
 
         with self._get_conn() as conn:
             with conn.cursor() as cur:
-                cur.execute(f"UPDATE itinerary_items SET {set_clause} WHERE id = %s", tuple(values))
+                cur.execute(f"UPDATE itinerary_items SET {set_clause} WHERE id = %s AND trip_id = %s", tuple(values))
 
-    def delete_item(self, item_id: int) -> None:
+    def delete_item(self, trip_id: int, item_id: int) -> None:
+        # Finding #3: Ràng buộc trip_id
         with self._get_conn() as conn:
             with conn.cursor() as cur:
-                cur.execute("DELETE FROM itinerary_items WHERE id = %s", (item_id,))
+                cur.execute("DELETE FROM itinerary_items WHERE id = %s AND trip_id = %s", (item_id, trip_id))
 
     def set_sharing(self, trip_id: int, is_public: bool) -> Optional[str]:
+        # Finding #8: Cấp token mới mỗi lần bật chia sẻ
         import secrets
         token = secrets.token_urlsafe(16) if is_public else None
         with self._get_conn() as conn:
@@ -542,13 +590,18 @@ class PgRepo:
     # ---------------------------------------------------------
     # ratings
     # ---------------------------------------------------------
-    def save_rating(self, user_id: int, destination_id: int, trip_id: int, score: int, review_text: str) -> int:
+    def save_rating(self, user_id: int, destination_id: int, trip_id: int, score: int, review_text: str = "") -> int:
+        # Finding #4: UPSERT theo (user_id, trip_id, destination_id)
         with self._get_conn() as conn:
             with conn.cursor() as cur:
                 cur.execute(
                     """
                     INSERT INTO ratings (user_id, destination_id, trip_id, score, review_text, is_approved)
                     VALUES (%s, %s, %s, %s, %s, FALSE)
+                    ON CONFLICT (user_id, trip_id, destination_id) DO UPDATE
+                    SET score = EXCLUDED.score,
+                        review_text = EXCLUDED.review_text,
+                        is_approved = FALSE
                     RETURNING id
                     """,
                     (user_id, destination_id, trip_id, score, review_text),

@@ -29,11 +29,13 @@
             </p>
             <div class="d-flex justify-content-end gap-2">
                 <form action="/admin/ratings" method="POST" class="d-inline">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     <input type="hidden" name="rating_id" value="{{ r.id }}">
                     <input type="hidden" name="action" value="reject">
                     <button type="submit" class="btn btn-sm btn-outline-danger">Từ chối</button>
                 </form>
                 <form action="/admin/ratings" method="POST" class="d-inline">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     <input type="hidden" name="rating_id" value="{{ r.id }}">
                     <input type="hidden" name="action" value="approve">
                     <button type="submit" class="btn btn-sm btn-success fw-bold"><i class="bi bi-check-lg me-1"></i>Duyệt đánh giá</button>

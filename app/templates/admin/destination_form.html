@@ -9,6 +9,7 @@
             <div class="card-body p-4 p-sm-5">
                 <h3 class="fw-bold mb-4 text-dark">{{ 'Chỉnh sửa thông tin địa điểm' if destination else 'Thêm địa điểm du lịch mới' }}</h3>
                 <form action="{{ '/admin/destinations/' ~ destination.id if destination else '/admin/destinations' }}" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     <div class="row g-3">
                         <div class="col-md-8">
                             <label class="form-label fw-bold">Tên địa điểm</label>
@@ -34,16 +35,20 @@
                             <label class="form-label fw-bold">Kinh độ (Longitude)</label>
                             <input type="number" step="any" class="form-control" name="longitude" value="{{ destination.longitude if destination else 0.0 }}" required>
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label fw-bold">Mức giá (1: Miễn phí, 4: Rất cao)</label>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Giá vé (VNĐ)</label>
+                            <input type="number" min="0" step="1000" class="form-control" name="ticket_price" value="{{ destination.ticket_price if destination else 0 }}" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Mức giá (1..4)</label>
                             <input type="number" min="1" max="4" class="form-control" name="price_range" value="{{ destination.price_range if destination else 2 }}" required>
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label fw-bold">Độ ồn ào (1: Yên tĩnh, 5: Sôi động)</label>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Độ ồn ào (1..5)</label>
                             <input type="number" min="1" max="5" class="form-control" name="noise_level" value="{{ destination.noise_level if destination else 3 }}" required>
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label fw-bold">Thời lượng tham quan (giờ)</label>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Thời lượng (giờ)</label>
                             <input type="number" step="0.5" class="form-control" name="duration_hours" value="{{ destination.duration_hours if destination else 1.5 }}" required>
                         </div>
                         <div class="col-md-6">

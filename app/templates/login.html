@@ -12,6 +12,7 @@
                     <p class="text-muted small">Chào mừng bạn quay trở lại với DuLich</p>
                 </div>
                 <form action="/login" method="POST" novalidate>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     <div class="mb-3">
                         <label for="email" class="form-label fw-semibold">Địa chỉ Email</label>
                         <input type="email" class="form-control form-control-lg" id="email" name="email" placeholder="name@example.com" required autofocus>
