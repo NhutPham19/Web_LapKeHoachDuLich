@@ -50,6 +50,12 @@ def seed_destinations(csv_path: Path = None, db_url: str = None):
                 tags_raw = row.get("tags", "").strip()
                 tags_json = json.loads(tags_raw) if tags_raw else []
 
+                image_public_id = row.get("image_public_id", "").strip() or None
+                image_source = row.get("image_source", "placeholder").strip()
+                image_author = row.get("image_author", "").strip()
+                image_license = row.get("image_license", "").strip()
+                image_source_url = row.get("image_source_url", "").strip()
+
                 cursor.execute(
                     """
                     SELECT id FROM destinations
@@ -66,7 +72,9 @@ def seed_destinations(csv_path: Path = None, db_url: str = None):
                         SET address = %s, latitude = %s, longitude = %s,
                             description = %s, image_url = %s, category_id = %s,
                             price_range = %s, noise_level = %s, duration_hours = %s,
-                            is_outdoor = %s, opening_hours = %s, tags = %s
+                            is_outdoor = %s, opening_hours = %s, tags = %s,
+                            image_public_id = %s, image_source = %s, image_author = %s,
+                            image_license = %s, image_source_url = %s
                         WHERE id = %s
                         """,
                         (
@@ -82,6 +90,11 @@ def seed_destinations(csv_path: Path = None, db_url: str = None):
                             row.get("is_outdoor", "True").lower() in ("true", "1"),
                             json.dumps(opening_json) if opening_json else None,
                             json.dumps(tags_json),
+                            image_public_id,
+                            image_source,
+                            image_author,
+                            image_license,
+                            image_source_url,
                             existing[0],
                         ),
                     )
@@ -92,12 +105,16 @@ def seed_destinations(csv_path: Path = None, db_url: str = None):
                             name, province, address, latitude, longitude,
                             description, image_url, category_id,
                             price_range, noise_level, duration_hours,
-                            is_outdoor, opening_hours, tags
+                            is_outdoor, opening_hours, tags,
+                            image_public_id, image_source, image_author,
+                            image_license, image_source_url
                         ) VALUES (
                             %s, %s, %s, %s, %s,
                             %s, %s, %s,
                             %s, %s, %s,
-                            %s, %s, %s
+                            %s, %s, %s,
+                            %s, %s, %s,
+                            %s, %s
                         )
                         """,
                         (
@@ -115,6 +132,11 @@ def seed_destinations(csv_path: Path = None, db_url: str = None):
                             row.get("is_outdoor", "True").lower() in ("true", "1"),
                             json.dumps(opening_json) if opening_json else None,
                             json.dumps(tags_json),
+                            image_public_id,
+                            image_source,
+                            image_author,
+                            image_license,
+                            image_source_url,
                         ),
                     )
                 count += 1

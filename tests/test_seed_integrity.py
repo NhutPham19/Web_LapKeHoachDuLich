@@ -27,6 +27,11 @@ REQUIRED_FIELDS = {
     "tags",
     "description",
     "image_url",
+    "image_public_id",
+    "image_source",
+    "image_author",
+    "image_license",
+    "image_source_url",
 }
 
 
@@ -143,6 +148,15 @@ class SeedDataIntegrityTests(unittest.TestCase):
                 except Exception as e:
                     self.fail(f"Dòng {i}: tags JSON không hợp lệ: {e}")
 
+                # 9. image metadata (Claude Task T2 & T5)
+                img_source = row.get("image_source", "").strip()
+                self.assertIn(img_source, ("wikimedia", "placeholder"), f"Dòng {i}: image_source không hợp lệ: {img_source}")
+                pub_id = row.get("image_public_id", "").strip()
+                self.assertTrue(pub_id.startswith("dulich_vn/destinations/"), f"Dòng {i}: image_public_id sai định dạng: {pub_id}")
+                if img_source == "wikimedia":
+                    self.assertTrue(row.get("image_author", "").strip(), f"Dòng {i}: ảnh wikimedia thiếu image_author")
+                    self.assertTrue(row.get("image_license", "").strip(), f"Dòng {i}: ảnh wikimedia thiếu image_license")
+
             self.assertGreater(row_count, 0, "File seed destinations.csv không có dòng dữ liệu nào")
 
     def test_seed_each_hub_satisfies_claude_constraints(self):
@@ -234,6 +248,20 @@ class SeedDataIntegrityTests(unittest.TestCase):
         self.assertTrue(40 <= len(users) <= 60, f"Số users ({len(users)}) phải nằm trong [40, 60]")
         for uid, count in user_counts.items():
             self.assertGreaterEqual(count, 5, f"User {uid} có ít hơn 5 ratings ({count})")
+
+    def test_image_manifest_csv_integrity(self):
+        """Claude Task T5: Kiểm tra tính toàn vẹn của image_manifest.csv (96 địa điểm, có attribution)."""
+        manifest_file = Path(__file__).parent.parent / "db" / "seed" / "image_manifest.csv"
+        self.assertTrue(manifest_file.exists(), f"Không tìm thấy manifest file: {manifest_file}")
+        with open(manifest_file, mode="r", encoding="utf-8") as f:
+            reader = list(csv.DictReader(f))
+        self.assertEqual(len(reader), 96, "Image manifest phải chứa đúng 96 địa điểm")
+        for idx, row in enumerate(reader, start=2):
+            self.assertIn(row["review_status"], ("APPROVED", "PLACEHOLDER"))
+            self.assertTrue(row["image_public_id"].startswith("dulich_vn/destinations/"))
+            if row["review_status"] == "APPROVED":
+                self.assertTrue(row["thumbnail_url"].startswith("http"))
+                self.assertTrue(row["image_license"])
 
 
 if __name__ == "__main__":
