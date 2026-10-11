@@ -3,7 +3,7 @@ import unittest
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
-from app.contracts import (BUDGET_SPLIT, INTERESTS, PROVINCES, TIME_SLOTS, CostBreakdown,
+from app.contracts import (BUDGET_SPLIT, INTERESTS, PROVINCES, PROVINCE_COORDS, TEST_PROVINCES, TIME_SLOTS, CostBreakdown,
                            DayPlan, Destination, ItineraryItem, TripPlan, TripRequest, WeatherDay)
 from tests.fakes import FakeRepo
 from tests.fixtures.ratings import CULTURE_USERS, NATURE_USERS, SYNTHETIC_RATINGS
@@ -62,7 +62,7 @@ class FixtureSanityTests(unittest.TestCase):
         self.assertGreaterEqual(len(data["destinations"]), 12)
         destinations = [destination_from_json(item) for item in data["destinations"]]
         self.assertEqual(len({destination.id for destination in destinations}), len(destinations))
-        self.assertEqual({destination.province for destination in destinations}, set(PROVINCES))
+        self.assertEqual({destination.province for destination in destinations}, set(TEST_PROVINCES))
         self.assertEqual({destination.price_range for destination in destinations}, {1, 2, 3, 4})
         self.assertEqual({destination.noise_level for destination in destinations}, {1, 2, 3, 4, 5})
         self.assertEqual({destination.is_outdoor for destination in destinations}, {False, True})
@@ -71,6 +71,11 @@ class FixtureSanityTests(unittest.TestCase):
             self.assertTrue(set(destination.tags).issubset(INTERESTS))
             self.assertGreater(destination.duration_hours, 0)
             self.assertIn("giả lập", destination.description.lower())
+
+    def test_provinces_derived_from_province_coords(self):
+        """Kiểm tra bất biến: PROVINCES được derive 100% từ PROVINCE_COORDS (Single Source of Truth)."""
+        self.assertEqual(set(PROVINCES), set(PROVINCE_COORDS.keys()))
+        self.assertTrue(set(TEST_PROVINCES).issubset(set(PROVINCES)))
 
     def test_ratings_are_structured_opposing_synthetic_groups(self):
         self.assertGreaterEqual(len(SYNTHETIC_RATINGS), 60)

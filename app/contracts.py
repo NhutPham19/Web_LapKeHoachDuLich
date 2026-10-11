@@ -7,12 +7,13 @@ INTERESTS = ("thien_nhien", "bien", "nui", "van_hoa", "lich_su",
              "am_thuc", "mua_sam", "vui_choi", "yen_tinh")
 TRAVEL_STYLES = ("tiet_kiem", "thoai_mai", "sang_trong")
 TIME_SLOTS = ("morning", "afternoon", "evening")
-PROVINCES = ("Đà Lạt", "Hội An", "Phú Quốc")
-PROVINCE_COORDS = {            # dùng gọi OpenWeatherMap
+TEST_PROVINCES = ("Đà Lạt", "Hội An", "Phú Quốc")
+PROVINCE_COORDS = {            # Nguồn sự thật duy nhất cho điểm đến và OpenWeatherMap
     "Đà Lạt": (11.9404, 108.4583),
     "Hội An": (15.8801, 108.3380),
     "Phú Quốc": (10.2899, 103.9840),
 }
+PROVINCES: tuple[str, ...] = tuple(PROVINCE_COORDS.keys())
 WEEKDAY_KEYS = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")   # date.weekday() → key
 
 SLOT_START = {"morning": "08:00", "afternoon": "13:30", "evening": "18:00"}

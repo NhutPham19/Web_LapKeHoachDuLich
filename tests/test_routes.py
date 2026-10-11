@@ -133,7 +133,7 @@ class RoutesTests(unittest.TestCase):
         }
 
         # 1. Tỉnh không hợp lệ
-        bad_p = dict(base_payload, province="Hà Nội")
+        bad_p = dict(base_payload, province="Atlantis")
         r = self.client.post("/trips/new", data=bad_p, follow_redirects=False)
         self.assertEqual(r.status_code, 302)
 
