@@ -2,6 +2,7 @@ import json
 import unittest
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
+from unittest.mock import patch
 
 from app import create_app
 from app.contracts import Destination
@@ -268,6 +269,59 @@ class RoutesTests(unittest.TestCase):
         # Khách vãng lai xem lại link cũ -> 404
         r_public_revoked = anon_client.get(f"/s/{share_token}")
         self.assertEqual(r_public_revoked.status_code, 404)
+
+    def test_route_level_feedback_loop_updates_recommendation(self):
+        """Finding #34(a): Route-level feedback loop: Hoàn thành trip -> chấm điểm -> admin duyệt -> CF cập nhật gợi ý."""
+        # 1. Đăng ký và đăng nhập User 1
+        client1 = self.app.test_client()
+        self._register_and_login(client1, email="user1_feedback@example.com", full_name="User Feedback 1")
+        tok1 = self._get_csrf_token(client1)
+
+        valid_date = (datetime.now(timezone(timedelta(hours=7))).date() + timedelta(days=2)).isoformat()
+        r = client1.post("/trips/new", data={
+            "province": "Đà Lạt",
+            "start_date": valid_date,
+            "days": "1",
+            "budget": "2000000",
+            "num_people": "1",
+            "interests": ["thien_nhien"],
+            "travel_style": "tiet_kiem",
+            "csrf_token": tok1,
+        })
+        trip_id = int(r.headers["Location"].split("/")[-1])
+        trip = self.repo.get_trip(trip_id)
+        rated_dest = trip.plan.days[0].items[0].destination
+
+        # Giả lập hoàn thành chuyến đi
+        self.repo.set_status(trip_id, "completed")
+        with patch("app.routes.ratings.today_vn", return_value=date(2026, 12, 1)):
+            # User 1 đánh giá 5 sao cho điểm đến này
+            r_rate = client1.post(f"/trips/{trip_id}/rate", data={
+                f"score_{rated_dest.id}": "5",
+                f"review_{rated_dest.id}": "Cảnh quan tuyệt vời 5 sao",
+                "csrf_token": tok1,
+            })
+            self.assertEqual(r_rate.status_code, 302)
+
+        # 2. Đăng ký Admin và duyệt rating
+        admin_client = self.app.test_client()
+        self._register_and_login(admin_client, email="admin_feedback@example.com", full_name="Admin Feedback")
+        self.repo.set_user_admin("admin_feedback@example.com", is_admin=True)
+        with admin_client.session_transaction() as sess:
+            sess["user"] = dict(sess["user"], is_admin=True)
+
+        pending = self.repo.list_pending_ratings()
+        matching = [p for p in pending if p["destination_id"] == rated_dest.id]
+        self.assertTrue(len(matching) > 0)
+        r_id = matching[0]["id"]
+
+        tok_admin = self._get_csrf_token(admin_client)
+        r_approve = admin_client.post("/admin/ratings", data={"rating_id": str(r_id), "action": "approve", "csrf_token": tok_admin})
+        self.assertEqual(r_approve.status_code, 302)
+
+        # 3. Xác nhận list_approved_ratings đã ghi nhận rating mới
+        approved = self.repo.list_approved_ratings()
+        self.assertTrue(any(d == rated_dest.id and s == 5 for u, d, s in approved))
 
 
 if __name__ == "__main__":

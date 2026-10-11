@@ -100,6 +100,39 @@ class PlannerServiceTests(unittest.TestCase):
         # User ẩm thực/vui chơi phải chọn Chợ Ẩm thực (id 3)
         self.assertIn(3, dest_ids_food)
 
+    def test_seed_data_contrasting_profiles_jaccard_similarity(self):
+        """Finding #34(b): Kiểm tra độ tương đồng Jaccard giữa 2 profile đối lập trên từng tỉnh đạt mục tiêu <= 0.5."""
+        from app.services import recommender
+
+        start_date = date(2026, 10, 12)
+        test_cases = [
+            ("Đà Lạt", ("thien_nhien", "yen_tinh"), "tiet_kiem", ("am_thuc", "mua_sam", "vui_choi"), "thoai_mai"),
+            ("Hội An", ("thien_nhien", "yen_tinh"), "tiet_kiem", ("vui_choi", "am_thuc"), "thoai_mai"),
+            ("Phú Quốc", ("bien", "thien_nhien", "yen_tinh"), "tiet_kiem", ("am_thuc", "mua_sam", "vui_choi"), "thoai_mai"),
+        ]
+
+        for prov, p1_tags, p1_style, p2_tags, p2_style in test_cases:
+            r1 = TripRequest(province=prov, start_date=start_date, days=1, budget=2000000, num_people=1, interests=p1_tags, travel_style=p1_style)
+            r2 = TripRequest(province=prov, start_date=start_date, days=1, budget=2000000, num_people=1, interests=p2_tags, travel_style=p2_style)
+
+            # Lấy top-2 địa điểm được recommend ưu tiên cao nhất
+            rec1 = recommender.recommend(r1, self.destinations, SYNTHETIC_RATINGS)[:2]
+            rec2 = recommender.recommend(r2, self.destinations, SYNTHETIC_RATINGS)[:2]
+
+            s1 = {item.destination.id for item in rec1}
+            s2 = {item.destination.id for item in rec2}
+
+            intersection = s1 & s2
+            union = s1 | s2
+            jaccard = len(intersection) / len(union) if union else 0.0
+
+            # Tiêu chí Finding #34: Jaccard <= 0.5
+            self.assertLessEqual(
+                jaccard,
+                0.5,
+                f"Độ chồng lấn Jaccard ({jaccard:.2f}) tại {prov} vượt quá ngưỡng 0.5!",
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

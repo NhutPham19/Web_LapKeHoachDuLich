@@ -27,6 +27,17 @@ def rate_trip_view(trip_id: int):
             dests[item.destination.id] = item.destination
 
     if request.method == "POST":
+        trip_dest_ids = set(dests.keys())
+        for key in request.form:
+            if key.startswith("score_"):
+                try:
+                    d_id = int(key.replace("score_", ""))
+                    if d_id not in trip_dest_ids:
+                        flash("Không thể đánh giá địa điểm không thuộc chuyến đi.", "danger")
+                        return render_template("rate.html", trip=trip, destinations=list(dests.values())), 400
+                except ValueError:
+                    pass
+
         for d_id in dests:
             score_str = request.form.get(f"score_{d_id}")
             review_text = request.form.get(f"review_{d_id}", "").strip()

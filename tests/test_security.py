@@ -59,11 +59,11 @@ class SecurityAndEdgeCaseTests(unittest.TestCase):
         with client.session_transaction() as sess:
             return sess["user"]["id"]
 
-    def _create_trip_for_user_a(self):
-        tok = self._get_csrf_token(self.client_a)
+    def _create_trip(self, client):
+        tok = self._get_csrf_token(client)
         vn_today = datetime.now(timezone(timedelta(hours=7))).date()
         valid_date = (vn_today + timedelta(days=2)).isoformat()
-        r = self.client_a.post("/trips/new", data={
+        r = client.post("/trips/new", data={
             "province": "Đà Lạt",
             "start_date": valid_date,
             "days": "2",
@@ -75,6 +75,9 @@ class SecurityAndEdgeCaseTests(unittest.TestCase):
         })
         trip_id = int(r.headers["Location"].split("/")[-1])
         return trip_id
+
+    def _create_trip_for_user_a(self):
+        return self._create_trip(self.client_a)
 
     # -------------------------------------------------------------------------
     # 1. Phân quyền & Chống IDOR (Findings #3 & #9)
@@ -196,6 +199,202 @@ class SecurityAndEdgeCaseTests(unittest.TestCase):
         # Kiểm tra trang profile / trips không in hash
         r = self.client_a.get("/trips")
         self.assertNotIn(user["password_hash"], r.get_data(as_text=True))
+
+    # -------------------------------------------------------------------------
+    # 6. IDOR & Integrity sâu (Finding #33)
+    # -------------------------------------------------------------------------
+    def test_cross_trip_item_idor_and_whitelist_columns(self):
+        """Finding #3 & #33: Không thể sửa/xóa item của trip khác, khóa ngoài whitelist bị bỏ qua, chặn sai tỉnh/ngày."""
+        trip_a_id = self._create_trip_for_user_a()
+        trip_b_id = self._create_trip(self.client_b)
+
+        trip_a = self.repo.get_trip(trip_a_id)
+        trip_b = self.repo.get_trip(trip_b_id)
+        item_a = trip_a.plan.days[0].items[0]
+        item_b = trip_b.plan.days[0].items[0]
+
+        tok_a = self._get_csrf_token(self.client_a)
+        headers_a = {"X-CSRF-Token": tok_a, "Content-Type": "application/json"}
+
+        # 1. User A cố update item của Trip B qua endpoint trip của mình -> 404
+        r = self.client_a.patch(f"/api/trips/{trip_a_id}/items/{item_b.id}", headers=headers_a, json={"notes": "Hacked"})
+        self.assertEqual(r.status_code, 404)
+
+        # 2. User A cố delete item của Trip B qua endpoint trip của mình -> 404
+        r = self.client_a.delete(f"/api/trips/{trip_a_id}/items/{item_b.id}", headers=headers_a)
+        self.assertEqual(r.status_code, 404)
+
+        # 3. Payload chứa các key ngoài whitelist (id, trip_id, is_active) không được ghi đè
+        r = self.client_a.patch(
+            f"/api/trips/{trip_a_id}/items/{item_a.id}",
+            headers=headers_a,
+            json={"id": 99999, "trip_id": 88888, "is_active": False, "notes": "Ghi chú hợp lệ"},
+        )
+        self.assertEqual(r.status_code, 200)
+        reloaded_trip_a = self.repo.get_trip(trip_a_id)
+        reloaded_item = [it for day in reloaded_trip_a.plan.days for it in day.items if it.id == item_a.id][0]
+        self.assertEqual(reloaded_item.notes, "Ghi chú hợp lệ")
+        self.assertEqual(reloaded_item.id, item_a.id)
+
+        # 4. Sửa destination_id sang một điểm khác tỉnh (Hội An trong fixture) -> 400
+        hoian_dest = next(d for d in self.destinations if d.province == "Hội An")
+        r = self.client_a.patch(
+            f"/api/trips/{trip_a_id}/items/{item_a.id}",
+            headers=headers_a,
+            json={"destination_id": hoian_dest.id},
+        )
+        self.assertEqual(r.status_code, 400)
+
+        # 5. Sửa day_number ngoài 1..total_days -> 400
+        r = self.client_a.patch(
+            f"/api/trips/{trip_a_id}/items/{item_a.id}",
+            headers=headers_a,
+            json={"day_number": 99},
+        )
+        self.assertEqual(r.status_code, 400)
+
+    def test_rating_membership_duplicate_and_unapprove_on_edit(self):
+        """Finding #4 & #33: Rating cho điểm không thuộc trip bị chặn 400, gửi lại không nhân đôi, sửa rating reset is_approved=False."""
+        trip_a_id = self._create_trip_for_user_a()
+        tok_a = self._get_csrf_token(self.client_a)
+
+        trip_a = self.repo.get_trip(trip_a_id)
+        valid_dest_id = trip_a.plan.days[0].items[0].destination.id
+        foreign_dest_id = next(d.id for d in self.destinations if d.id != valid_dest_id and d.province == "Hội An")
+
+        self.repo.set_status(trip_a_id, "completed")
+        with patch("app.routes.ratings.today_vn", return_value=date(2026, 12, 10)):
+            # 1. Rating cho địa điểm không thuộc trip -> 400
+            r_foreign = self.client_a.post(
+                f"/trips/{trip_a_id}/rate",
+                data={
+                    f"score_{foreign_dest_id}": "5",
+                    "csrf_token": tok_a,
+                },
+            )
+            self.assertEqual(r_foreign.status_code, 400)
+
+            # 2. Rating hợp lệ cho điểm thuộc trip -> 302 chuyển hướng
+            r_valid = self.client_a.post(
+                f"/trips/{trip_a_id}/rate",
+                data={
+                    f"score_{valid_dest_id}": "4",
+                    f"review_{valid_dest_id}": "Rất đẹp",
+                    "csrf_token": tok_a,
+                },
+            )
+            self.assertEqual(r_valid.status_code, 302)
+
+            # Tìm rating vừa tạo và duyệt bởi admin
+            pending = self.repo.list_pending_ratings()
+            matching = [p for p in pending if p["destination_id"] == valid_dest_id and p["user_id"] == self.user_a_id]
+            self.assertEqual(len(matching), 1)
+            r_id = matching[0]["id"]
+            self.repo.set_rating_approved(r_id, True)
+            self.assertTrue(any(d == valid_dest_id for u, d, s in self.repo.list_approved_ratings()))
+
+            # 3. Gửi lại rating mới cho cùng điểm đó -> không nhân đôi dòng và is_approved quay về False
+            r_update = self.client_a.post(
+                f"/trips/{trip_a_id}/rate",
+                data={
+                    f"score_{valid_dest_id}": "5",
+                    f"review_{valid_dest_id}": "Cập nhật đánh giá",
+                    "csrf_token": tok_a,
+                },
+            )
+            self.assertEqual(r_update.status_code, 302)
+            # is_approved = False -> không còn trong approved
+            self.assertFalse(any(d == valid_dest_id for u, d, s in self.repo.list_approved_ratings()))
+            # Chỉ có 1 bản ghi duy nhất trong pending, điểm 5
+            pending_after = self.repo.list_pending_ratings()
+            matching_after = [p for p in pending_after if p["destination_id"] == valid_dest_id and p["user_id"] == self.user_a_id]
+            self.assertEqual(len(matching_after), 1)
+            self.assertEqual(matching_after[0]["id"], r_id)
+            self.assertEqual(matching_after[0]["score"], 5)
+
+    def test_sharing_generates_new_token_unshare_null_and_leak_prevention(self):
+        """Finding #8 & #33: Bật lại chia sẻ cấp token mới, tắt = NULL, trang /s/<token> không lộ email/user_id, có Referrer-Policy."""
+        trip_a_id = self._create_trip_for_user_a()
+        tok_a = self._get_csrf_token(self.client_a)
+        headers_a = {"X-CSRF-Token": tok_a, "Content-Type": "application/json"}
+
+        # Bật chia sẻ lần 1
+        r1 = self.client_a.post(f"/api/trips/{trip_a_id}/share", headers=headers_a, json={"is_public": True})
+        url1 = r1.get_json()["share_url"]
+        token1 = url1.split("/")[-1]
+
+        # Bật chia sẻ lần 2 -> phải ra token mới
+        r2 = self.client_a.post(f"/api/trips/{trip_a_id}/share", headers=headers_a, json={"is_public": True})
+        url2 = r2.get_json()["share_url"]
+        token2 = url2.split("/")[-1]
+        self.assertNotEqual(token1, token2)
+
+        # Tắt chia sẻ -> share_url = None, share_token = None
+        r_off = self.client_a.post(f"/api/trips/{trip_a_id}/share", headers=headers_a, json={"is_public": False})
+        self.assertIsNone(r_off.get_json()["share_url"])
+        trip_obj = self.repo.get_trip(trip_a_id)
+        self.assertIsNone(trip_obj.share_token)
+        self.assertFalse(trip_obj.is_public)
+
+        # Bật lại chia sẻ và kiểm tra trang công khai /s/<token>
+        r3 = self.client_a.post(f"/api/trips/{trip_a_id}/share", headers=headers_a, json={"is_public": True})
+        token3 = r3.get_json()["share_url"].split("/")[-1]
+
+        r_public = self.anon_client.get(f"/s/{token3}")
+        self.assertEqual(r_public.status_code, 200)
+        # Header Referrer-Policy
+        self.assertEqual(r_public.headers.get("Referrer-Policy"), "strict-origin-when-cross-origin")
+        # Không lộ email hoặc user_id của chủ sở hữu
+        user_a = self.repo.get_user(self.user_a_id)
+        page_html = r_public.get_data(as_text=True)
+        self.assertNotIn(user_a["email"], page_html)
+        self.assertNotIn(f"user_id: {self.user_a_id}", page_html)
+
+    # -------------------------------------------------------------------------
+    # 7. Exhaustive CSRF Tests & Login Session Regeneration (Finding #36)
+    # -------------------------------------------------------------------------
+    def test_csrf_exhaustive_routes_and_login_session_regeneration(self):
+        """Finding #36: Mọi route state-changing từ chối nếu thiếu CSRF, login tái tạo token mới."""
+        trip_a_id = self._create_trip_for_user_a()
+
+        # 1. Kiểm tra session CSRF token được tái tạo mới khi đăng nhập
+        client = self.app.test_client()
+        pre_tok = self._get_csrf_token(client)
+        self.assertIsNotNone(pre_tok)
+        client.post("/login", data={
+            "email": "user_a@example.com",
+            "password": "passwordA123",
+            "csrf_token": pre_tok,
+        })
+        with client.session_transaction() as sess:
+            post_tok = sess.get("csrf_token")
+            self.assertIsNotNone(post_tok)
+            self.assertNotEqual(pre_tok, post_tok)
+
+        # 2. Liệt kê từng route thay đổi dữ liệu (POST, PATCH, DELETE), không gửi CSRF token -> 403
+        bad_client = self.app.test_client()
+        routes_to_test = [
+            ("POST", "/register", {"email": "x@ex.com", "password": "123", "full_name": "X"}),
+            ("POST", "/login", {"email": "user_a@example.com", "password": "passwordA123"}),
+            ("POST", "/logout", {}),
+            ("POST", "/trips/new", {"province": "Đà Lạt"}),
+            ("POST", f"/trips/{trip_a_id}/delete", {}),
+            ("POST", f"/trips/{trip_a_id}/rate", {}),
+            ("POST", f"/api/trips/{trip_a_id}/items", {}),
+            ("PATCH", f"/api/trips/{trip_a_id}/items/1", {}),
+            ("DELETE", f"/api/trips/{trip_a_id}/items/1", {}),
+            ("POST", f"/api/trips/{trip_a_id}/share", {}),
+            ("POST", f"/api/trips/{trip_a_id}/complete", {}),
+        ]
+
+        for method, route, data in routes_to_test:
+            if method == "POST":
+                res = bad_client.post(route, data=data)
+            elif method == "PATCH":
+                res = bad_client.patch(route, json=data)
+            elif method == "DELETE":
+                res = bad_client.delete(route)
+            self.assertEqual(res.status_code, 403, f"Route {method} {route} không chặn 403 khi thiếu CSRF!")
 
 
 if __name__ == "__main__":

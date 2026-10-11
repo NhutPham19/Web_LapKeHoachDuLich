@@ -43,7 +43,7 @@ def recommend(
         if max_cb > min_cb:
             cb_norm[d.id] = (val - min_cb) / (max_cb - min_cb)
         else:
-            cb_norm[d.id] = val
+            cb_norm[d.id] = 1.0 if val > 0 else 0.0
 
     cf_norm: dict[int, float] = {}
     if cf_scores:
@@ -54,7 +54,7 @@ def recommend(
             if max_cf > min_cf:
                 cf_norm[did] = (val - min_cf) / (max_cf - min_cf)
             else:
-                cf_norm[did] = val
+                cf_norm[did] = 1.0 if val > 0 else 0.0
 
     scored_list: list[ScoredDestination] = []
     for d in province_dests:

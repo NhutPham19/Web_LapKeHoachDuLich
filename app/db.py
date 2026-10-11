@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 import json
 import os
 from datetime import date, datetime, timedelta
@@ -28,15 +29,36 @@ class PgRepo:
     """Repository cài đặt bằng PostgreSQL thuần qua psycopg2."""
 
     def __init__(self, db_url: Optional[str] = None):
-        self.db_url = db_url or config.DATABASE_URL
+        url = db_url or config.DATABASE_URL
+        if config.IS_PRODUCTION and url and "sslmode=" not in url and not url.startswith("sqlite"):
+            separator = "&" if "?" in url else "?"
+            url = f"{url}{separator}sslmode=require"
+        self.db_url = url
 
+    @contextmanager
     def _get_conn(self):
         if psycopg2 is None:
             raise RuntimeError(
                 f"Không thể khởi tạo psycopg2 trên môi trường hiện tại: {_PSYCOPG2_ERROR}. "
                 "Lưu ý: Driver này hoạt động bình thường trên môi trường Linux/Render."
             )
-        return psycopg2.connect(self.db_url)
+        conn = psycopg2.connect(self.db_url)
+        try:
+            with conn:
+                yield conn
+        finally:
+            conn.close()
+
+    def ping_db(self) -> bool:
+        """Finding #10: Kiểm tra kết nối cơ sở dữ liệu qua SELECT 1."""
+        try:
+            with self._get_conn() as conn:
+                with conn.cursor() as cur:
+                    cur.execute("SELECT 1")
+                    row = cur.fetchone()
+                    return bool(row and row[0] == 1)
+        except Exception:
+            return False
 
     # ---------------------------------------------------------
     # users & preferences

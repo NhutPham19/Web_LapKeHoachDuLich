@@ -250,6 +250,13 @@ def api_update_item(trip_id: int, item_id: int):
     if not trip or trip.user_id != session["user"]["id"]:
         return {"error": "not_found", "message": "Chuyến đi không tồn tại"}, 404
 
+    # Finding #3 & #33: Kiểm tra item thực sự thuộc trip này (chống IDOR)
+    trip_item_ids = {
+        item.id for day in trip.plan.days for item in day.items if item.id is not None
+    }
+    if item_id not in trip_item_ids:
+        return {"error": "not_found", "message": "Địa điểm không thuộc chuyến đi này"}, 404
+
     data = request.get_json() or {}
     # Validate fields nếu có
     if "day_number" in data and not (1 <= data["day_number"] <= trip.plan.request.days):
@@ -273,6 +280,13 @@ def api_delete_item(trip_id: int, item_id: int):
     trip = current_app.repo.get_trip(trip_id)
     if not trip or trip.user_id != session["user"]["id"]:
         return {"error": "not_found", "message": "Chuyến đi không tồn tại"}, 404
+
+    # Finding #3 & #33: Kiểm tra item thực sự thuộc trip này (chống IDOR)
+    trip_item_ids = {
+        item.id for day in trip.plan.days for item in day.items if item.id is not None
+    }
+    if item_id not in trip_item_ids:
+        return {"error": "not_found", "message": "Địa điểm không thuộc chuyến đi này"}, 404
 
     current_app.repo.delete_item(trip_id, item_id)
     return jsonify({"ok": True}), 200

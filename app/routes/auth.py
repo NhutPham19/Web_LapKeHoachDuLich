@@ -1,3 +1,4 @@
+import secrets
 from flask import Blueprint, current_app, flash, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -32,11 +33,9 @@ def register():
         pwd_hash = generate_password_hash(password)
         user_id = current_app.repo.create_user(email, pwd_hash, full_name)
 
-        # Chống session fixation
-        csrf_tok = session.get("csrf_token")
+        # Chống session fixation & tái tạo CSRF token mới (Finding #36)
         session.clear()
-        if csrf_tok:
-            session["csrf_token"] = csrf_tok
+        session["csrf_token"] = secrets.token_urlsafe(32)
 
         session["user"] = {
             "id": user_id,
@@ -61,11 +60,9 @@ def login():
             flash("Email hoặc mật khẩu không chính xác.", "danger")
             return render_template("login.html"), 400
 
-        # Chống session fixation
-        csrf_tok = session.get("csrf_token")
+        # Chống session fixation & tái tạo CSRF token mới (Finding #36)
         session.clear()
-        if csrf_tok:
-            session["csrf_token"] = csrf_tok
+        session["csrf_token"] = secrets.token_urlsafe(32)
 
         session["user"] = {
             "id": user["id"],

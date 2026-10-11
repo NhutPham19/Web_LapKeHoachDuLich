@@ -13,6 +13,12 @@ def create_app(repo=None):
     app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
     if config.IS_PRODUCTION:
         app.config["SESSION_COOKIE_SECURE"] = True
+        app.config["PREFERRED_URL_SCHEME"] = "https"
+        try:
+            from werkzeug.middleware.proxy_fix import ProxyFix
+            app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
+        except Exception:
+            pass
 
     if repo is None:
         from .db import PgRepo
