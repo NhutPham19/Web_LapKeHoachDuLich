@@ -8,10 +8,13 @@ INTERESTS = ("thien_nhien", "bien", "nui", "van_hoa", "lich_su",
 TRAVEL_STYLES = ("tiet_kiem", "thoai_mai", "sang_trong")
 TIME_SLOTS = ("morning", "afternoon", "evening")
 TEST_PROVINCES = ("Đà Lạt", "Hội An", "Phú Quốc")
-PROVINCE_COORDS = {            # Nguồn sự thật duy nhất cho điểm đến và OpenWeatherMap
+PROVINCE_COORDS = {            # Nguồn sự thật duy nhất cho 6 Hub điểm đến và OpenWeatherMap
     "Đà Lạt": (11.9404, 108.4583),
     "Hội An": (15.8801, 108.3380),
     "Phú Quốc": (10.2899, 103.9840),
+    "Hà Nội": (21.0285, 105.8542),
+    "Đà Nẵng": (16.0544, 108.2022),
+    "TP. Hồ Chí Minh": (10.8231, 106.6297),
 }
 PROVINCES: tuple[str, ...] = tuple(PROVINCE_COORDS.keys())
 WEEKDAY_KEYS = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")   # date.weekday() → key

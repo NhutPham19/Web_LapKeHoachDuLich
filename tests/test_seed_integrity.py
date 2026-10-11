@@ -145,6 +145,54 @@ class SeedDataIntegrityTests(unittest.TestCase):
 
             self.assertGreater(row_count, 0, "File seed destinations.csv không có dòng dữ liệu nào")
 
+    def test_seed_each_hub_satisfies_claude_constraints(self):
+        """
+        Kiểm tra các ràng buộc chất lượng nghiêm ngặt của Claude cho từng Hub (1A):
+        - Mỗi hub có >= 15 địa điểm.
+        - Mỗi hub có >= 3 điểm ẩm thực.
+        - Mỗi hub có >= 4 điểm trong nhà (is_outdoor=False).
+        - Mỗi hub có >= 2 điểm miễn phí vé (ticket_price=0 hoặc price_range=1).
+        """
+        with open(SEED_FILE, mode="r", encoding="utf-8") as f:
+            reader = list(csv.DictReader(f))
+
+        hubs = set(row["province"] for row in reader)
+        self.assertEqual(hubs, set(PROVINCES))
+
+        for hub in hubs:
+            hub_rows = [r for r in reader if r["province"] == hub]
+            self.assertGreaterEqual(
+                len(hub_rows), 15,
+                f"Hub '{hub}' có ít hơn 15 địa điểm (hiện có: {len(hub_rows)})"
+            )
+
+            food_count = sum(
+                1 for r in hub_rows
+                if r.get("category_name") == "Am thuc" or "am_thuc" in json.loads(r.get("tags", "[]"))
+            )
+            self.assertGreaterEqual(
+                food_count, 3,
+                f"Hub '{hub}' có ít hơn 3 điểm ẩm thực (hiện có: {food_count})"
+            )
+
+            indoor_count = sum(
+                1 for r in hub_rows
+                if r.get("is_outdoor", "").strip().lower() in ("false", "0")
+            )
+            self.assertGreaterEqual(
+                indoor_count, 4,
+                f"Hub '{hub}' có ít hơn 4 điểm trong nhà (hiện có: {indoor_count})"
+            )
+
+            free_count = sum(
+                1 for r in hub_rows
+                if int(r.get("ticket_price", 0)) == 0 or int(r.get("price_range", 1)) == 1
+            )
+            self.assertGreaterEqual(
+                free_count, 2,
+                f"Hub '{hub}' có ít hơn 2 điểm miễn phí vé (hiện có: {free_count})"
+            )
+
 
 if __name__ == "__main__":
     unittest.main()
