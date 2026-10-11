@@ -1,4 +1,4 @@
-﻿import json
+import json
 import os
 from pathlib import Path
 from werkzeug.security import generate_password_hash
@@ -8,10 +8,47 @@ from app.contracts import Destination
 from tests.fakes import FakeRepo
 from tests.fixtures.ratings import SYNTHETIC_RATINGS
 
+import csv
+
+
 def load_demo_repo():
+    seed_csv = Path(__file__).parent / "db" / "seed" / "destinations.csv"
     fixture_path = Path(__file__).parent / "tests" / "fixtures" / "destinations.json"
     destinations = []
-    if fixture_path.exists():
+
+    if seed_csv.exists():
+        cat_map = {"Thien nhien": 1, "Van hoa": 2, "Di tich": 2, "Am thuc": 3, "Vui choi": 4}
+        with open(seed_csv, "r", encoding="utf-8") as f:
+            for idx, row in enumerate(csv.DictReader(f), start=1):
+                raw_hours = row.get("opening_hours", "")
+                hours = json.loads(raw_hours) if raw_hours else None
+                raw_tags = row.get("tags", "")
+                tags = tuple(json.loads(raw_tags)) if raw_tags else ()
+                destinations.append(
+                    Destination(
+                        id=idx,
+                        name=row["name"].strip(),
+                        province=row["province"].strip(),
+                        latitude=float(row["latitude"]),
+                        longitude=float(row["longitude"]),
+                        category_id=cat_map.get(row.get("category_name", "").strip(), 1),
+                        price_range=int(row["price_range"]),
+                        noise_level=int(row["noise_level"]),
+                        duration_hours=float(row["duration_hours"]),
+                        is_outdoor=row["is_outdoor"].strip().lower() in ("true", "1"),
+                        ticket_price=int(row.get("ticket_price", 0)),
+                        opening_hours=hours,
+                        tags=tags,
+                        description=row.get("description", "").strip(),
+                        image_url=row.get("image_url", "").strip(),
+                        image_public_id=row.get("image_public_id") or None,
+                        image_source=row.get("image_source", "placeholder").strip(),
+                        image_author=row.get("image_author", "").strip(),
+                        image_license=row.get("image_license", "").strip(),
+                        image_source_url=row.get("image_source_url", "").strip(),
+                    )
+                )
+    elif fixture_path.exists():
         with open(fixture_path, encoding="utf-8") as f:
             data = json.load(f)
             for item in data.get("destinations", []):
@@ -38,9 +75,22 @@ def load_demo_repo():
     repo.save_preferences(user_id, ["thien_nhien", "yen_tinh", "am_thuc"], "tiet_kiem")
 
     # Nạp ratings mẫu để thuật toán Collaborative Filtering có dữ liệu chạy ngay
-    for uid, did, score in SYNTHETIC_RATINGS:
-        r_id = repo.save_rating(uid, did, 1, score, "Đánh giá giả lập trải nghiệm")
-        repo.set_rating_approved(r_id, True)
+    ratings_csv = Path(__file__).parent / "db" / "seed" / "ratings.csv"
+    if ratings_csv.exists():
+        with open(ratings_csv, "r", encoding="utf-8") as f:
+            for row in csv.DictReader(f):
+                r_id = repo.save_rating(
+                    int(row["user_id"]),
+                    int(row["destination_id"]),
+                    1,
+                    int(row["score"]),
+                    row.get("review_text", ""),
+                )
+                repo.set_rating_approved(r_id, True)
+    else:
+        for uid, did, score in SYNTHETIC_RATINGS:
+            r_id = repo.save_rating(uid, did, 1, score, "Đánh giá giả lập trải nghiệm")
+            repo.set_rating_approved(r_id, True)
 
     return repo
 
