@@ -56,7 +56,7 @@ def new_trip_view():
 
         # Validate theo 1.G.7 & Finding #22: giới hạn số lượng trip draft
         existing_trips = current_app.repo.list_trips(user_id) if hasattr(current_app.repo, "list_trips") else current_app.repo.list_user_trips(user_id)
-        if sum(1 for t in existing_trips if t.status == "draft") >= 20:
+        if sum(1 for t in existing_trips if (t.get("status") if isinstance(t, dict) else getattr(t, "status", None)) == "draft") >= 20:
             flash("Bạn đã đạt giới hạn tối đa 20 chuyến đi bản nháp. Vui lòng hoàn thành hoặc xóa bớt để tạo mới.", "warning")
             return redirect(url_for("trips.list_trips_view"))
 

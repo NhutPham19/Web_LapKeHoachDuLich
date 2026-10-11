@@ -178,6 +178,19 @@ class RoutesTests(unittest.TestCase):
         self.assertEqual(r.status_code, 302)
         self.assertTrue(r.headers["Location"].startswith("/trips/"))
 
+        # 10. Tạo chuyến thứ 2 (kiểm tra existing_trips chứa dict không gây AttributeError)
+        r2 = self.client.post("/trips/new", data=base_payload, follow_redirects=False)
+        self.assertEqual(r2.status_code, 302)
+        self.assertTrue(r2.headers["Location"].startswith("/trips/"))
+
+        # 11. Đạt giới hạn 20 draft trips
+        from unittest.mock import patch
+        mock_20_drafts = [{"id": i, "status": "draft"} for i in range(20)]
+        with patch.object(self.app.repo, "list_trips", return_value=mock_20_drafts):
+            r_limit = self.client.post("/trips/new", data=base_payload, follow_redirects=False)
+            self.assertEqual(r_limit.status_code, 302)
+            self.assertEqual(r_limit.headers["Location"], "/trips")
+
     def test_api_candidates_and_items_crud(self):
         """Kiểm tra API lấy ứng viên và thao tác thêm/sửa/xóa địa điểm trong chuyến đi."""
         self._register_and_login(self.client)
