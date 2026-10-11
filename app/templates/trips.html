@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Chuyến đi của tôi — DuLich{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold text-dark mb-1">Chuyến đi của tôi</h2>
+        <p class="text-muted mb-0">Quản lý các kế hoạch du lịch đã được cá nhân hóa của bạn</p>
+    </div>
+    <a href="/trips/new" class="btn btn-primary btn-lg fw-bold shadow-sm">
+        <i class="bi bi-plus-circle me-1"></i>Tạo kế hoạch mới
+    </a>
+</div>
+
+{% if trips %}
+<div class="row g-4">
+    {% for trip in trips %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm border-0 rounded-3 destination-card">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-primary-subtle text-primary px-2 py-1">
+                        <i class="bi bi-geo-alt-fill me-1"></i>{{ trip.province }}
+                    </span>
+                    <span class="badge {% if trip.status == 'completed' %}bg-success{% elif trip.status == 'confirmed' %}bg-primary{% else %}bg-secondary{% endif %}">
+                        {{ 'Hoàn thành' if trip.status == 'completed' else ('Đã xác nhận' if trip.status == 'confirmed' else 'Bản nháp') }}
+                    </span>
+                </div>
+                <h5 class="fw-bold mb-2">
+                    <a href="/trips/{{ trip.id }}" class="text-dark text-decoration-none hover-primary">{{ trip.title }}</a>
+                </h5>
+                <p class="text-muted small mb-3">
+                    <i class="bi bi-calendar-event me-1"></i>Khởi hành: {{ trip.start_date.strftime('%d/%m/%Y') if trip.start_date else 'Chưa đặt' }} &bull; {{ trip.days }} ngày
+                </p>
+                <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                    <a href="/trips/{{ trip.id }}" class="btn btn-sm btn-outline-primary">
+                        Xem chi tiết <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                    <form action="/trips/{{ trip.id }}/delete" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa kế hoạch này?');">
+                        <button type="submit" class="btn btn-sm btn-link text-danger p-0" title="Xóa">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-5 bg-white rounded-3 shadow-sm my-4">
+    <i class="bi bi-map text-muted" style="font-size: 4rem;"></i>
+    <h4 class="fw-bold mt-3 text-dark">Bạn chưa có kế hoạch du lịch nào</h4>
+    <p class="text-muted mb-4">Hãy tạo chuyến đi đầu tiên để hệ thống gợi ý lịch trình tối ưu cho bạn!</p>
+    <a href="/trips/new" class="btn btn-primary btn-lg fw-bold">
+        <i class="bi bi-plus-circle me-1"></i>Lập kế hoạch ngay
+    </a>
+</div>
+{% endif %}
+{% endblock %}

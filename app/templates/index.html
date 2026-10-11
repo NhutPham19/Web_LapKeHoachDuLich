@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}DuLich — Lập Kế Hoạch Du Lịch Cá Nhân Hóa Thông Minh{% endblock %}
+
+{% block content %}
+<div class="row align-items-center py-5">
+    <div class="col-lg-6 mb-4 mb-lg-0">
+        <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill fw-semibold mb-3">
+            <i class="bi bi-robot me-1"></i>Ứng dụng Học Máy (Machine Learning)
+        </span>
+        <h1 class="display-4 fw-bold text-dark lh-sm mb-3">
+            Lập kế hoạch du lịch <span class="text-primary">cá nhân hóa</span> trong chớp mắt
+        </h1>
+        <p class="lead text-muted mb-4">
+            Khám phá <strong>Đà Lạt, Hội An, Phú Quốc</strong> với lịch trình được tối ưu riêng cho bạn dựa trên sở thích, ngân sách, yếu tố thời tiết thực tế và thuật toán gợi ý thông minh.
+        </p>
+        <div class="d-flex flex-wrap gap-3">
+            {% if session.get('user') %}
+            <a href="/trips/new" class="btn btn-primary btn-lg fw-bold px-4 py-3 shadow-sm">
+                <i class="bi bi-plus-circle me-2"></i>Tạo kế hoạch mới
+            </a>
+            <a href="/trips" class="btn btn-outline-secondary btn-lg px-4 py-3">
+                <i class="bi bi-journal-bookmark me-2"></i>Kế hoạch của tôi
+            </a>
+            {% else %}
+            <a href="/register" class="btn btn-primary btn-lg fw-bold px-4 py-3 shadow-sm">
+                Bắt đầu ngay miễn phí <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+            <a href="/login" class="btn btn-outline-secondary btn-lg px-4 py-3">
+                Đăng nhập
+            </a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="row g-3">
+            <div class="col-6">
+                <div class="card border-0 shadow-sm rounded-3 p-3 bg-white mb-3">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi bi-flower1 text-danger fs-3 me-2"></i>
+                        <h6 class="fw-bold mb-0">Đà Lạt</h6>
+                    </div>
+                    <small class="text-muted">Không khí se lạnh, ngắm hoa, đồi thông thơ mộng</small>
+                </div>
+                <div class="card border-0 shadow-sm rounded-3 p-3 bg-white">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi bi-water text-primary fs-3 me-2"></i>
+                        <h6 class="fw-bold mb-0">Phú Quốc</h6>
+                    </div>
+                    <small class="text-muted">Biển xanh cát trắng, lặn ngắm san hô, ẩm thực hải sản</small>
+                </div>
+            </div>
+            <div class="col-6 pt-4">
+                <div class="card border-0 shadow-sm rounded-3 p-3 bg-white mb-3">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi bi-bank text-warning fs-3 me-2"></i>
+                        <h6 class="fw-bold mb-0">Hội An</h6>
+                    </div>
+                    <small class="text-muted">Phố cổ đèn lồng, di sản văn hóa, ẩm thực đặc trưng</small>
+                </div>
+                <div class="card border-0 shadow-sm rounded-3 p-3 bg-primary text-white">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi bi-cpu fs-3 me-2"></i>
+                        <h6 class="fw-bold mb-0">Thuật toán ML</h6>
+                    </div>
+                    <small class="text-white-50">Content-Based + Collaborative Filtering (KNN)</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

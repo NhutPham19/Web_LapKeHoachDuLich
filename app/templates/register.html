@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Đăng ký tài khoản — DuLich{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm border-0 rounded-3">
+            <div class="card-body p-4 p-sm-5">
+                <div class="text-center mb-4">
+                    <h3 class="fw-bold text-primary">Tạo tài khoản mới</h3>
+                    <p class="text-muted small">Khám phá lịch trình du lịch cá nhân hóa cho chuyến đi của bạn</p>
+                </div>
+                <form action="/register" method="POST" novalidate>
+                    <div class="mb-3">
+                        <label for="full_name" class="form-label fw-semibold">Họ và tên</label>
+                        <input type="text" class="form-control form-control-lg" id="full_name" name="full_name" placeholder="Nguyễn Văn A" required autofocus>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label fw-semibold">Địa chỉ Email</label>
+                        <input type="email" class="form-control form-control-lg" id="email" name="email" placeholder="name@example.com" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="password" class="form-label fw-semibold">Mật khẩu</label>
+                        <input type="password" class="form-control form-control-lg" id="password" name="password" placeholder="Tối thiểu 6 ký tự" required>
+                    </div>
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-primary btn-lg fw-bold">Đăng ký ngay</button>
+                    </div>
+                </form>
+                <div class="text-center mt-3">
+                    <span class="text-muted">Đã có tài khoản?</span>
+                    <a href="/login" class="text-decoration-none fw-semibold">Đăng nhập</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

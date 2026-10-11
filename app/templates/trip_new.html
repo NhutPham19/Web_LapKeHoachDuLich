@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block title %}Tạo kế hoạch chuyến đi mới — DuLich{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <div class="card shadow-sm border-0 rounded-3">
+            <div class="card-body p-4 p-sm-5">
+                <div class="text-center mb-4">
+                    <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill mb-2 fw-semibold">
+                        <i class="bi bi-magic me-1"></i>Tự động hóa thông minh
+                    </span>
+                    <h2 class="fw-bold text-dark">Lập Kế Hoạch Chuyến Đi Mới</h2>
+                    <p class="text-muted">Nhập thông tin cơ bản, hệ thống học máy sẽ đề xuất lịch trình tối ưu từng ngày</p>
+                </div>
+
+                <form action="/trips/new" method="POST" id="tripForm">
+                    <div class="row g-4">
+                        <!-- Điểm đến -->
+                        <div class="col-md-6">
+                            <label for="province" class="form-label fw-bold">
+                                <i class="bi bi-geo-alt-fill text-danger me-1"></i>Điểm đến
+                            </label>
+                            <select class="form-select form-select-lg" id="province" name="province" required>
+                                <option value="" disabled selected>Chọn tỉnh / thành phố...</option>
+                                <option value="Đà Lạt">Đà Lạt (Lâm Đồng) — Xứ sở ngàn hoa</option>
+                                <option value="Hội An">Hội An (Quảng Nam) — Phố cổ di sản</option>
+                                <option value="Phú Quốc">Phú Quốc (Kiên Giang) — Đảo ngọc thiên đường</option>
+                            </select>
+                        </div>
+
+                        <!-- Ngày bắt đầu -->
+                        <div class="col-md-6">
+                            <label for="start_date" class="form-label fw-bold">
+                                <i class="bi bi-calendar-event text-primary me-1"></i>Ngày bắt đầu chuyến đi
+                            </label>
+                            <input type="date" class="form-control form-control-lg" id="start_date" name="start_date" required>
+                            <small class="text-muted">Ngày khởi hành phải từ hôm nay trở đi</small>
+                        </div>
+
+                        <!-- Số ngày đi -->
+                        <div class="col-md-4">
+                            <label for="days" class="form-label fw-bold">
+                                <i class="bi bi-clock-history text-info me-1"></i>Số ngày đi
+                            </label>
+                            <input type="number" class="form-control form-control-lg" id="days" name="days" min="1" max="7" value="3" required>
+                            <small class="text-muted">Từ 1 đến tối đa 7 ngày</small>
+                        </div>
+
+                        <!-- Số lượng người -->
+                        <div class="col-md-4">
+                            <label for="num_people" class="form-label fw-bold">
+                                <i class="bi bi-people-fill text-warning me-1"></i>Số lượng người
+                            </label>
+                            <input type="number" class="form-control form-control-lg" id="num_people" name="num_people" min="1" max="20" value="2" required>
+                            <small class="text-muted">Từ 1 đến tối đa 20 người</small>
+                        </div>
+
+                        <!-- Tổng ngân sách -->
+                        <div class="col-md-4">
+                            <label for="budget" class="form-label fw-bold">
+                                <i class="bi bi-cash-stack text-success me-1"></i>Tổng ngân sách (VNĐ)
+                            </label>
+                            <input type="number" class="form-control form-control-lg" id="budget" name="budget" min="100000" step="50000" value="5000000" required>
+                            <small class="text-muted">Tối thiểu 100,000 VNĐ</small>
+                        </div>
+
+                        <!-- Phong cách du lịch -->
+                        <div class="col-12 pt-3 border-top">
+                            <label class="form-label fw-bold mb-3">
+                                <i class="bi bi-award text-secondary me-1"></i>Phong cách chuyến đi
+                            </label>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="card p-3 border rounded-3 text-start">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="travel_style" value="tiet_kiem" id="style_tiet_kiem" {% if pref_style == 'tiet_kiem' %}checked{% endif %}>
+                                            <label class="form-check-label fw-bold ms-1" for="style_tiet_kiem">Tiết kiệm</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card p-3 border rounded-3 text-start">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="travel_style" value="thoai_mai" id="style_thoai_mai" {% if not pref_style or pref_style == 'thoai_mai' %}checked{% endif %}>
+                                            <label class="form-check-label fw-bold ms-1" for="style_thoai_mai">Thoải mái</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card p-3 border rounded-3 text-start">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="travel_style" value="sang_trong" id="style_sang_trong" {% if pref_style == 'sang_trong' %}checked{% endif %}>
+                                            <label class="form-check-label fw-bold ms-1" for="style_sang_trong">Sang trọng</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sở thích chuyến đi này -->
+                        <div class="col-12 pt-3 border-top">
+                            <label class="form-label fw-bold mb-3">
+                                <i class="bi bi-tags text-primary me-1"></i>Sở thích ưu tiên cho chuyến đi này <span class="text-muted fw-normal">(Chọn ít nhất 1)</span>
+                            </label>
+                            <div class="row g-2">
+                                {% set interests_data = [
+                                    ('thien_nhien', 'Thiên nhiên'), ('bien', 'Biển đảo'), ('nui', 'Đồi núi'),
+                                    ('van_hoa', 'Văn hóa'), ('lich_su', 'Lịch sử'), ('am_thuc', 'Ẩm thực'),
+                                    ('mua_sam', 'Mua sắm'), ('vui_choi', 'Vui chơi'), ('yen_tinh', 'Yên tĩnh')
+                                ] %}
+                                {% for val, label in interests_data %}
+                                <div class="col-6 col-md-4 col-lg-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="interests" value="{{ val }}" id="trip_int_{{ val }}"
+                                            {% if pref_interests and val in pref_interests %}checked{% elif not pref_interests and loop.first %}checked{% endif %}>
+                                        <label class="form-check-label" for="trip_int_{{ val }}">{{ label }}</label>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="col-12 pt-4">
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg fw-bold py-3 shadow-sm" id="submitBtn">
+                                    <i class="bi bi-stars me-2"></i>Tạo Lịch Trình Tự Động Bằng ML
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Đặt ngày tối thiểu là ngày hôm nay
+    const today = new Date().toISOString().split('T')[0];
+    const startDateInput = document.getElementById('start_date');
+    if (startDateInput) {
+        startDateInput.min = today;
+        startDateInput.value = today;
+    }
+
+    // Xử lý loading state khi submit
+    const tripForm = document.getElementById('tripForm');
+    const submitBtn = document.getElementById('submitBtn');
+    if (tripForm && submitBtn) {
+        tripForm.addEventListener('submit', function() {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Đang phân tích dữ liệu & tối ưu lịch trình...';
+        });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Quản lý địa điểm — Quản trị viên{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold text-dark mb-1"><i class="bi bi-geo-alt me-2 text-primary"></i>Quản lý địa điểm du lịch</h2>
+        <p class="text-muted mb-0">Thêm, sửa, xóa các điểm tham quan tại 3 tỉnh thành</p>
+    </div>
+    <a href="/admin/destinations/new" class="btn btn-primary fw-bold shadow-sm">
+        <i class="bi bi-plus-circle me-1"></i>Thêm địa điểm mới
+    </a>
+</div>
+
+<div class="card shadow-sm border-0 rounded-3">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">Tên địa điểm</th>
+                        <th>Tỉnh/Thành</th>
+                        <th>Khoảng giá</th>
+                        <th>Thời lượng</th>
+                        <th>Không gian</th>
+                        <th>Đánh giá</th>
+                        <th class="text-end pe-4">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for d in destinations %}
+                    <tr>
+                        <td class="ps-4">
+                            <strong>{{ d.name }}</strong>
+                            <div class="small text-muted">{{ d.address }}</div>
+                        </td>
+                        <td><span class="badge bg-primary-subtle text-primary">{{ d.province }}</span></td>
+                        <td>Mức {{ d.price_range }}/4</td>
+                        <td>{{ d.duration_hours }}h</td>
+                        <td>
+                            {% if d.is_outdoor %}
+                            <span class="badge bg-info-subtle text-info">Ngoài trời</span>
+                            {% else %}
+                            <span class="badge bg-secondary-subtle text-secondary">Trong nhà</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ d.avg_rating or 'Chưa có' }}</td>
+                        <td class="text-end pe-4">
+                            <a href="/admin/destinations/{{ d.id }}/edit" class="btn btn-sm btn-outline-secondary me-1"><i class="bi bi-pencil"></i></a>
+                            <form action="/admin/destinations/{{ d.id }}/delete" method="POST" class="d-inline" onsubmit="return confirm('Xác nhận xóa địa điểm này?');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

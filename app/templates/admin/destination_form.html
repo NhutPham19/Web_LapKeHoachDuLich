@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Sửa địa điểm' if destination else 'Thêm địa điểm mới' }} — Quản trị viên{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0 rounded-3">
+            <div class="card-body p-4 p-sm-5">
+                <h3 class="fw-bold mb-4 text-dark">{{ 'Chỉnh sửa thông tin địa điểm' if destination else 'Thêm địa điểm du lịch mới' }}</h3>
+                <form action="{{ '/admin/destinations/' ~ destination.id if destination else '/admin/destinations' }}" method="POST">
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <label class="form-label fw-bold">Tên địa điểm</label>
+                            <input type="text" class="form-control" name="name" value="{{ destination.name if destination else '' }}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Tỉnh / Thành</label>
+                            <select class="form-select" name="province" required>
+                                {% for p in ['Đà Lạt', 'Hội An', 'Phú Quốc'] %}
+                                <option value="{{ p }}" {% if destination and destination.province == p %}selected{% endif %}>{{ p }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Địa chỉ chi tiết</label>
+                            <input type="text" class="form-control" name="address" value="{{ destination.address if destination else '' }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Vĩ độ (Latitude)</label>
+                            <input type="number" step="any" class="form-control" name="latitude" value="{{ destination.latitude if destination else 0.0 }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Kinh độ (Longitude)</label>
+                            <input type="number" step="any" class="form-control" name="longitude" value="{{ destination.longitude if destination else 0.0 }}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Mức giá (1: Miễn phí, 4: Rất cao)</label>
+                            <input type="number" min="1" max="4" class="form-control" name="price_range" value="{{ destination.price_range if destination else 2 }}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Độ ồn ào (1: Yên tĩnh, 5: Sôi động)</label>
+                            <input type="number" min="1" max="5" class="form-control" name="noise_level" value="{{ destination.noise_level if destination else 3 }}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Thời lượng tham quan (giờ)</label>
+                            <input type="number" step="0.5" class="form-control" name="duration_hours" value="{{ destination.duration_hours if destination else 1.5 }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Loại không gian</label>
+                            <select class="form-select" name="is_outdoor">
+                                <option value="1" {% if not destination or destination.is_outdoor %}selected{% endif %}>Ngoài trời (Outdoor)</option>
+                                <option value="0" {% if destination and not destination.is_outdoor %}selected{% endif %}>Trong nhà (Indoor)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Ảnh đại diện (URL)</label>
+                            <input type="url" class="form-control" name="image_url" value="{{ destination.image_url if destination else '' }}" placeholder="https://...">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Mô tả ngắn</label>
+                            <textarea class="form-control" name="description" rows="3">{{ destination.description if destination else '' }}</textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold mb-2">Thẻ tags (Khớp với sở thích người dùng)</label>
+                            <div class="row g-2">
+                                {% set all_tags = ['thien_nhien', 'bien', 'nui', 'van_hoa', 'lich_su', 'am_thuc', 'mua_sam', 'vui_choi', 'yen_tinh'] %}
+                                {% for t in all_tags %}
+                                <div class="col-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="tags" value="{{ t }}" id="tag_{{ t }}"
+                                            {% if destination and t in destination.tags %}checked{% endif %}>
+                                        <label class="form-check-label" for="tag_{{ t }}">{{ t }}</label>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-12 pt-3 border-top d-flex justify-content-between">
+                            <a href="/admin/destinations" class="btn btn-outline-secondary">Hủy bỏ</a>
+                            <button type="submit" class="btn btn-primary fw-bold px-4">Lưu địa điểm</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

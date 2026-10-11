@@ -1,0 +1,19 @@
+name: Keepalive Render & Supabase
+
+on:
+  schedule:
+    # Chạy mỗi 14 phút một lần để tránh Render free tier sleep (sleep sau 15 phút idle)
+    - cron: '*/14 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Public Health Endpoint
+        run: |
+          if [ -n "${{ secrets.RENDER_HEALTH_URL }}" ]; then
+            curl -f -s "${{ secrets.RENDER_HEALTH_URL }}" || echo "Ping failed"
+          else
+            echo "RENDER_HEALTH_URL chưa được cấu hình trong Secrets"
+          fi

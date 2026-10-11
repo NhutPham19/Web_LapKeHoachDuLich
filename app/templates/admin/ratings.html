@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Duyệt đánh giá — Quản trị viên{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold text-dark mb-1"><i class="bi bi-patch-check me-2 text-warning"></i>Duyệt đánh giá trải nghiệm</h2>
+        <p class="text-muted mb-0">Các đánh giá được duyệt sẽ lập tức tham gia vào ma trận học máy Collaborative Filtering</p>
+    </div>
+</div>
+
+{% if pending_ratings %}
+<div class="row g-4">
+    {% for r in pending_ratings %}
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0 rounded-3 p-4">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                    <h5 class="fw-bold text-dark mb-0">{{ r.destination_name }}</h5>
+                    <small class="text-muted">Bởi: {{ r.user_name }} &bull; {{ r.created_at.strftime('%d/%m/%Y') if r.created_at else '' }}</small>
+                </div>
+                <span class="badge bg-warning text-dark fs-6">
+                    {{ r.score }} <i class="bi bi-star-fill"></i>
+                </span>
+            </div>
+            <p class="text-secondary bg-light p-3 rounded-3 my-3 fst-italic">
+                "{{ r.review_text or 'Không có nhận xét chi tiết' }}"
+            </p>
+            <div class="d-flex justify-content-end gap-2">
+                <form action="/admin/ratings" method="POST" class="d-inline">
+                    <input type="hidden" name="rating_id" value="{{ r.id }}">
+                    <input type="hidden" name="action" value="reject">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Từ chối</button>
+                </form>
+                <form action="/admin/ratings" method="POST" class="d-inline">
+                    <input type="hidden" name="rating_id" value="{{ r.id }}">
+                    <input type="hidden" name="action" value="approve">
+                    <button type="submit" class="btn btn-sm btn-success fw-bold"><i class="bi bi-check-lg me-1"></i>Duyệt đánh giá</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-5 bg-white rounded-3 shadow-sm my-4">
+    <i class="bi bi-check-circle text-success" style="font-size: 4rem;"></i>
+    <h4 class="fw-bold mt-3 text-dark">Không có đánh giá nào đang chờ duyệt</h4>
+    <p class="text-muted">Tất cả đánh giá mới từ người dùng đã được xử lý xong.</p>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Khảo sát sở thích du lịch — DuLich{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0 rounded-3">
+            <div class="card-body p-4 p-sm-5">
+                <div class="text-center mb-4">
+                    <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill mb-2 fw-semibold">Bước 1: Cá nhân hóa</span>
+                    <h2 class="fw-bold text-dark">Sở thích du lịch của bạn</h2>
+                    <p class="text-muted">Giúp thuật toán học máy hiểu rõ phong cách để gợi ý lịch trình phù hợp nhất</p>
+                </div>
+
+                <form action="/onboarding" method="POST">
+                    <!-- Sở thích (chọn nhiều) -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold fs-5 mb-3">
+                            <i class="bi bi-heart text-danger me-2"></i>Bạn thích trải nghiệm những điều gì? <span class="text-muted fs-6 fw-normal">(Chọn ít nhất 1 mục)</span>
+                        </label>
+                        <div class="row g-3">
+                            {% set interest_list = [
+                                ('thien_nhien', 'Thiên nhiên', 'bi-tree', 'Cây cỏ, rừng cây, thắng cảnh tự nhiên'),
+                                ('bien', 'Biển đảo', 'bi-water', 'Bãi biển xanh, cát trắng, lặn ngắm san hô'),
+                                ('nui', 'Đồi núi', 'bi-triangle', 'Leo núi, săn mây, không khí trong lành'),
+                                ('van_hoa', 'Văn hóa', 'bi-bank', 'Kiến trúc cổ, bảo tàng, phong tục địa phương'),
+                                ('lich_su', 'Di tích lịch sử', 'bi-hourglass-split', 'Các điểm di tích, lịch sử hào hùng'),
+                                ('am_thuc', 'Ẩm thực', 'bi-cup-hot', 'Thưởng thức đặc sản vùng miền, chợ đêm'),
+                                ('mua_sam', 'Mua sắm', 'bi-bag', 'Chợ truyền thống, quà lưu niệm'),
+                                ('vui_choi', 'Vui chơi giải trí', 'bi-controller', 'Công viên giải trí, hoạt động sôi nổi'),
+                                ('yen_tinh', 'Yên tĩnh / Thư giãn', 'bi-peace', 'Nghỉ dưỡng tránh đám đông, thanh bình')
+                            ] %}
+                            {% for val, label, icon, desc in interest_list %}
+                            <div class="col-md-6 col-lg-4">
+                                <label class="card h-100 p-3 border rounded-3 text-start cursor-pointer position-relative hover-shadow" for="interest_{{ val }}">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="interests" value="{{ val }}" id="interest_{{ val }}"
+                                            {% if user_interests and val in user_interests %}checked{% endif %}>
+                                        <label class="form-check-label fw-bold text-dark ms-1" for="interest_{{ val }}">
+                                            <i class="bi {{ icon }} text-primary me-1"></i>{{ label }}
+                                        </label>
+                                    </div>
+                                    <small class="text-muted d-block mt-2 ps-4">{{ desc }}</small>
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Phong cách du lịch -->
+                    <div class="mb-4 pt-3 border-top">
+                        <label class="form-label fw-bold fs-5 mb-3">
+                            <i class="bi bi-wallet2 text-success me-2"></i>Phong cách chuyến đi bạn hướng tới
+                        </label>
+                        <div class="row g-3">
+                            {% set styles = [
+                                ('tiet_kiem', 'Tiết kiệm', 'bi-piggy-bank', 'Ưu tiên chi phí thấp, điểm tham quan miễn phí hoặc giá mềm'),
+                                ('thoai_mai', 'Thoải mái (Phổ biến)', 'bi-emoji-smile', 'Cân đối hợp lý giữa trải nghiệm chất lượng và chi phí'),
+                                ('sang_trong', 'Sang trọng / Nghỉ dưỡng', 'bi-gem', 'Ưu tiên trải nghiệm cao cấp, tiện nghi tối đa')
+                            ] %}
+                            {% for s_val, s_label, s_icon, s_desc in styles %}
+                            <div class="col-md-4">
+                                <label class="card h-100 p-3 border rounded-3 text-start position-relative hover-shadow" for="style_{{ s_val }}">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="travel_style" value="{{ s_val }}" id="style_{{ s_val }}"
+                                            {% if user_style == s_val or (not user_style and s_val == 'thoai_mai') %}checked{% endif %} required>
+                                        <label class="form-check-label fw-bold text-dark ms-1" for="style_{{ s_val }}">
+                                            <i class="bi {{ s_icon }} text-success me-1"></i>{{ s_label }}
+                                        </label>
+                                    </div>
+                                    <small class="text-muted d-block mt-2 ps-4">{{ s_desc }}</small>
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="d-grid pt-3">
+                        <button type="submit" class="btn btn-primary btn-lg fw-bold py-3">
+                            Lưu sở thích & Tiếp tục lên kế hoạch <i class="bi bi-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

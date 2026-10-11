@@ -1,0 +1,388 @@
+{% extends "base.html" %}
+
+{% block title %}{{ trip.title }} — Chi tiết kế hoạch du lịch{% endblock %}
+
+{% block extra_head %}
+<style>
+    #tripMap {
+        height: 450px;
+        width: 100%;
+        border-radius: 12px;
+        z-index: 1;
+    }
+    .timeline-badge {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+    .destination-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .destination-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Header Chuyến Đi -->
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-3 border-bottom gap-3">
+    <div>
+        <div class="d-flex align-items-center gap-2 mb-1">
+            <h2 class="fw-bold mb-0 text-dark">{{ trip.title }}</h2>
+            <span class="badge {% if trip.status == 'completed' %}bg-success{% elif trip.status == 'confirmed' %}bg-primary{% else %}bg-secondary{% endif %} px-2 py-1">
+                {{ 'Hoàn thành' if trip.status == 'completed' else ('Đã xác nhận' if trip.status == 'confirmed' else 'Bản nháp') }}
+            </span>
+        </div>
+        <p class="text-muted mb-0">
+            <i class="bi bi-geo-alt-fill text-danger me-1"></i><strong>{{ trip.plan.request.province }}</strong> &bull;
+            <i class="bi bi-calendar-event me-1"></i>{{ trip.plan.request.start_date.strftime('%d/%m/%Y') }} ({{ trip.plan.request.days }} ngày) &bull;
+            <i class="bi bi-people me-1"></i>{{ trip.plan.request.num_people }} người &bull;
+            <i class="bi bi-cash me-1"></i>{{ "{:,.0f}".format(trip.plan.request.budget) }} VNĐ
+        </p>
+    </div>
+    <div class="d-flex gap-2">
+        <!-- Nút chia sẻ -->
+        {% if is_owner %}
+        <button class="btn btn-outline-primary" id="btnShareModal" data-bs-toggle="modal" data-bs-target="#shareModal">
+            <i class="bi bi-share me-1"></i>Chia sẻ
+        </button>
+        {% if trip.status != 'completed' %}
+        <form action="/api/trips/{{ trip.id }}/complete" method="POST" class="d-inline" id="completeTripForm">
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-check-circle me-1"></i>Hoàn thành chuyến đi
+            </button>
+        </form>
+        {% else %}
+        <a href="/trips/{{ trip.id }}/rate" class="btn btn-warning text-dark fw-bold">
+            <i class="bi bi-star-fill me-1"></i>Đánh giá chuyến đi
+        </a>
+        {% endif %}
+        {% endif %}
+    </div>
+</div>
+
+<!-- Danh Sách Cảnh Báo (Warnings) -->
+{% if trip.plan.warnings %}
+<div class="alert alert-warning shadow-sm rounded-3 mb-4" role="alert">
+    <h5 class="alert-heading fw-bold"><i class="bi bi-exclamation-triangle-fill me-2"></i>Lưu ý quan trọng cho chuyến đi</h5>
+    <ul class="mb-0 ps-3">
+        {% for warn in trip.plan.warnings %}
+        <li>{{ warn }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+<!-- Khối Thời Tiết & Ngân Sách -->
+<div class="row g-4 mb-4">
+    <!-- Dự báo thời tiết -->
+    <div class="col-lg-7">
+        <div class="card shadow-sm border-0 rounded-3 h-100">
+            <div class="card-header bg-white border-0 pt-3 pb-0">
+                <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-cloud-sun text-info me-2"></i>Dự báo thời tiết chuyến đi</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-2">
+                    {% for day in trip.plan.days %}
+                    <div class="col">
+                        <div class="card text-center p-2 border bg-light h-100">
+                            <small class="fw-bold text-muted">Ngày {{ day.day_number }}</small>
+                            <small class="text-secondary">{{ day.date.strftime('%d/%m') }}</small>
+                            {% if day.weather %}
+                                <div class="my-2">
+                                    <span class="fs-4 fw-bold text-primary">{{ day.weather.temp_min|round|int }}°-{{ day.weather.temp_max|round|int }}°C</span>
+                                </div>
+                                <small class="text-truncate d-block" title="{{ day.weather.condition }}">{{ day.weather.condition }}</small>
+                                <div class="mt-2 text-start small">
+                                    <div><i class="bi bi-sunrise text-warning"></i> {{ (day.weather.rain_prob.morning * 100)|round|int }}%</div>
+                                    <div><i class="bi bi-sun text-danger"></i> {{ (day.weather.rain_prob.afternoon * 100)|round|int }}%</div>
+                                    <div><i class="bi bi-moon-stars text-primary"></i> {{ (day.weather.rain_prob.evening * 100)|round|int }}%</div>
+                                </div>
+                            {% else %}
+                                <div class="my-3 text-muted small">
+                                    <i class="bi bi-dash-circle d-block fs-4 mb-1"></i>Chưa có dự báo
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phân bổ ngân sách -->
+    <div class="col-lg-5">
+        <div class="card shadow-sm border-0 rounded-3 h-100">
+            <div class="card-header bg-white border-0 pt-3 pb-0">
+                <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-pie-chart text-success me-2"></i>Dự toán chi phí</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Mức chi tiêu/ngày:</span>
+                    <strong class="text-primary">{{ "{:,.0f}".format(trip.plan.cost.per_day) }} VNĐ</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <span>Vé tham quan dự kiến:</span>
+                    <strong class="{% if trip.plan.cost.within_budget %}text-success{% else %}text-danger{% endif %}">
+                        {{ "{:,.0f}".format(trip.plan.cost.tickets_estimated) }} VNĐ
+                    </strong>
+                </div>
+                <div class="progress mb-3" style="height: 10px;">
+                    <div class="progress-bar bg-primary" style="width: 35%" title="Lưu trú: 35%"></div>
+                    <div class="progress-bar bg-success" style="width: 30%" title="Ăn uống: 30%"></div>
+                    <div class="progress-bar bg-info" style="width: 15%" title="Di chuyển: 15%"></div>
+                    <div class="progress-bar bg-warning" style="width: 10%" title="Vé tham quan: 10%"></div>
+                    <div class="progress-bar bg-secondary" style="width: 10%" title="Dự phòng: 10%"></div>
+                </div>
+                <ul class="list-group list-group-flush small">
+                    <li class="list-group-item d-flex justify-content-between px-0 py-1">
+                        <span><i class="bi bi-building text-primary me-2"></i>Lưu trú (35%)</span>
+                        <span>{{ "{:,.0f}".format(trip.plan.cost.allocation.luu_tru) }} VNĐ</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between px-0 py-1">
+                        <span><i class="bi bi-cup-hot text-success me-2"></i>Ăn uống (30%)</span>
+                        <span>{{ "{:,.0f}".format(trip.plan.cost.allocation.an_uong) }} VNĐ</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between px-0 py-1">
+                        <span><i class="bi bi-car-front text-info me-2"></i>Di chuyển (15%)</span>
+                        <span>{{ "{:,.0f}".format(trip.plan.cost.allocation.di_chuyen) }} VNĐ</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between px-0 py-1">
+                        <span><i class="bi bi-ticket-perforated text-warning me-2"></i>Vé tham quan (10%)</span>
+                        <span>{{ "{:,.0f}".format(trip.plan.cost.allocation.ve_vao_cua) }} VNĐ</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between px-0 py-1">
+                        <span><i class="bi bi-shield-check text-secondary me-2"></i>Dự phòng (10%)</span>
+                        <span>{{ "{:,.0f}".format(trip.plan.cost.allocation.du_phong) }} VNĐ</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bản Đồ Lộ Trình (Leaflet.js) -->
+<div class="card shadow-sm border-0 rounded-3 mb-4">
+    <div class="card-header bg-white border-0 pt-3 pb-0 d-flex justify-content-between align-items-center">
+        <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-map text-primary me-2"></i>Bản đồ tuyến đường tham quan</h5>
+        <small class="text-muted">Bản đồ OpenStreetMap qua Leaflet.js</small>
+    </div>
+    <div class="card-body">
+        <div id="tripMap"></div>
+    </div>
+</div>
+
+<!-- Lịch Trình Từng Ngày -->
+<div class="mb-5">
+    <h3 class="fw-bold text-dark mb-4"><i class="bi bi-calendar3 text-primary me-2"></i>Chi tiết lịch trình theo từng ngày</h3>
+    {% for day in trip.plan.days %}
+    <div class="card shadow-sm border-0 rounded-3 mb-4">
+        <div class="card-header bg-primary text-white py-3 rounded-top-3 d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fw-bold">
+                Ngày {{ day.day_number }}: {{ day.date.strftime('%A, %d/%m/%Y') }}
+            </h5>
+            <span class="badge bg-light text-primary">{{ day.items|length }} địa điểm</span>
+        </div>
+        <div class="card-body p-4">
+            {% set slots = [('morning', 'Buổi Sáng', 'bi-sunrise text-warning', '08:00 - 11:30'),
+                            ('afternoon', 'Buổi Chiều', 'bi-sun text-danger', '13:30 - 17:30'),
+                            ('evening', 'Buổi Tối', 'bi-moon-stars text-primary', '18:00 - 21:00')] %}
+            {% for s_key, s_name, s_icon, s_time in slots %}
+            <div class="mb-4">
+                <div class="d-flex align-items-center mb-3">
+                    <i class="bi {{ s_icon }} fs-4 me-2"></i>
+                    <h6 class="fw-bold mb-0 text-dark me-2">{{ s_name }}</h6>
+                    <small class="text-muted">({{ s_time }})</small>
+                </div>
+
+                {% set slot_items = day.items | selectattr("time_slot", "equalto", s_key) | list %}
+                {% if slot_items %}
+                <div class="row g-3">
+                    {% for item in slot_items %}
+                    <div class="col-md-6">
+                        <div class="card h-100 destination-card border rounded-3 p-3">
+                            <div class="d-flex gap-3">
+                                {% if item.destination.image_url %}
+                                <img src="{{ item.destination.image_url }}" alt="{{ item.destination.name }}" class="rounded-3 object-fit-cover" style="width: 100px; height: 100px;">
+                                {% else %}
+                                <div class="bg-light rounded-3 d-flex align-items-center justify-content-center text-muted" style="width: 100px; height: 100px;">
+                                    <i class="bi bi-image fs-2"></i>
+                                </div>
+                                {% endif %}
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <h6 class="fw-bold mb-1 text-dark">{{ item.destination.name }}</h6>
+                                        {% if is_owner and item.id %}
+                                        <button class="btn btn-sm btn-link text-danger p-0 delete-item-btn" data-item-id="{{ item.id }}" title="Xóa địa điểm này">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                        {% endif %}
+                                    </div>
+                                    <p class="text-muted small mb-2 text-truncate" style="max-width: 250px;">
+                                        <i class="bi bi-geo-alt me-1"></i>{{ item.destination.address or item.destination.province }}
+                                    </p>
+                                    <div class="d-flex flex-wrap gap-2 small">
+                                        <span class="badge bg-light text-dark border">
+                                            <i class="bi bi-clock me-1"></i>{{ item.destination.duration_hours }}h
+                                        </span>
+                                        <span class="badge bg-light text-dark border">
+                                            <i class="bi bi-ticket-perforated me-1"></i>{{ "{:,.0f}".format(item.estimated_cost) }} VNĐ
+                                        </span>
+                                        {% if item.destination.is_outdoor %}
+                                        <span class="badge bg-info-subtle text-info">Ngoài trời</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary-subtle text-secondary">Trong nhà</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="p-3 bg-light rounded-3 text-muted small">
+                    <i class="bi bi-info-circle me-1"></i>Buổi này để trống để tự do nghỉ ngơi, dạo chơi hoặc thưởng thức ẩm thực địa phương.
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Modal Chia Sẻ -->
+{% if is_owner %}
+<div class="modal fade" id="shareModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold"><i class="bi bi-share me-2"></i>Chia sẻ kế hoạch chuyến đi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="shareToggle" {% if trip.is_public %}checked{% endif %}>
+                    <label class="form-check-label fw-bold" for="shareToggle">Bật liên kết công khai</label>
+                </div>
+                <div id="shareLinkContainer" class="{% if not trip.is_public %}d-none{% endif %}">
+                    <label class="form-label small text-muted">Bất kỳ ai có liên kết này đều có thể xem kế hoạch (chỉ đọc):</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="shareLinkInput" readonly value="{{ request.host_url }}s/{{ trip.share_token if trip.share_token else '' }}">
+                        <button class="btn btn-primary" type="button" id="copyShareBtn"><i class="bi bi-clipboard me-1"></i>Sao chép</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // 1. Khởi tạo Bản đồ Leaflet
+    document.addEventListener("DOMContentLoaded", function() {
+        const destPoints = [
+            {% for day in trip.plan.days %}
+                {% for item in day.items %}
+                {
+                    name: "{{ item.destination.name }}",
+                    lat: {{ item.destination.latitude }},
+                    lng: {{ item.destination.longitude }},
+                    day: {{ day.day_number }},
+                    slot: "{{ item.time_slot }}",
+                    cost: "{{ "{:,.0f}".format(item.estimated_cost) }}"
+                },
+                {% endfor %}
+            {% endfor %}
+        ];
+
+        let mapCenter = [11.9404, 108.4583]; // Đà Lạt mặc định
+        if (destPoints.length > 0) {
+            mapCenter = [destPoints[0].lat, destPoints[0].lng];
+        }
+
+        const map = L.map('tripMap').setView(mapCenter, 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        const latLngs = [];
+        destPoints.forEach((p, idx) => {
+            const marker = L.marker([p.lat, p.lng]).addTo(map);
+            marker.bindPopup(`<strong>Ngày ${p.day} (${p.slot}):</strong><br>${p.name}<br><small>Vé: ${p.cost} VNĐ</small>`);
+            latLngs.push([p.lat, p.lng]);
+        });
+
+        if (latLngs.length > 1) {
+            const polyline = L.polyline(latLngs, {color: '#0d6efd', weight: 3, dashArray: '5, 10'}).addTo(map);
+            map.fitBounds(polyline.getBounds(), {padding: [40, 40]});
+        }
+
+        // 2. Xử lý Toggle Share
+        const shareToggle = document.getElementById('shareToggle');
+        const shareLinkContainer = document.getElementById('shareLinkContainer');
+        const shareLinkInput = document.getElementById('shareLinkInput');
+        const copyBtn = document.getElementById('copyShareBtn');
+
+        if (shareToggle) {
+            shareToggle.addEventListener('change', async function() {
+                const isPublic = this.checked;
+                try {
+                    const res = await fetch('/api/trips/{{ trip.id }}/share', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({is_public: isPublic})
+                    });
+                    const data = await res.json();
+                    if (data.is_public && data.share_url) {
+                        shareLinkInput.value = data.share_url;
+                        shareLinkContainer.classList.remove('d-none');
+                    } else {
+                        shareLinkContainer.classList.add('d-none');
+                    }
+                } catch (e) {
+                    alert('Lỗi cập nhật chia sẻ');
+                }
+            });
+        }
+
+        if (copyBtn) {
+            copyBtn.addEventListener('click', function() {
+                shareLinkInput.select();
+                navigator.clipboard.writeText(shareLinkInput.value);
+                alert('Đã sao chép liên kết vào bộ nhớ tạm!');
+            });
+        }
+
+        // 3. Xử lý xóa item
+        document.querySelectorAll('.delete-item-btn').forEach(btn => {
+            btn.addEventListener('click', async function() {
+                const itemId = this.dataset.itemId;
+                if (confirm('Bạn có chắc muốn xóa địa điểm này khỏi kế hoạch?')) {
+                    try {
+                        const res = await fetch(`/api/trips/{{ trip.id }}/items/${itemId}`, {
+                            method: 'DELETE'
+                        });
+                        if (res.ok) {
+                            location.reload();
+                        }
+                    } catch (e) {
+                        alert('Lỗi khi xóa địa điểm');
+                    }
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

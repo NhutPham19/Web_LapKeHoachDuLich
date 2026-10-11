@@ -1,0 +1,15 @@
+{
+  "fixture_notice": "DỮ LIỆU GIẢ LẬP chỉ dùng để dựng giao diện Cursor và kiểm thử.",
+  "request": {"province": "Đà Lạt", "start_date": "2026-10-12", "days": 2, "budget": 2000000, "num_people": 2, "interests": ["thien_nhien", "yen_tinh", "am_thuc"], "travel_style": "thoai_mai", "user_id": 101},
+  "days": [
+    {"day_number": 1, "date": "2026-10-12", "weather": {"date": "2026-10-12", "temp_min": 17.0, "temp_max": 23.0, "humidity": 78, "rain_prob": {"morning": 0.8, "afternoon": 0.3, "evening": 0.1}, "condition": "mưa vừa", "is_severe": false}, "items": [
+      {"destination": {"id": 2, "name": "Bảo tàng Mẫu Đà Lạt", "province": "Đà Lạt", "latitude": 11.946, "longitude": 108.441, "category_id": 2, "price_range": 2, "noise_level": 2, "duration_hours": 1.5, "is_outdoor": false, "tags": ["van_hoa", "lich_su", "yen_tinh"], "opening_hours": {"mon": "08:00-17:00"}, "address": "Địa chỉ giả lập 2", "description": "Địa điểm giả lập cho kiểm thử.", "image_url": "https://example.invalid/fake-da-lat-museum.jpg", "avg_rating": 4.1}, "day_number": 1, "time_slot": "morning", "order_in_slot": 1, "estimated_cost": 100000, "notes": "Ưu tiên trong nhà vì mưa.", "id": 1},
+      {"destination": {"id": 1, "name": "Đồi Thông Mẫu Đà Lạt", "province": "Đà Lạt", "latitude": 11.9401, "longitude": 108.4501, "category_id": 1, "price_range": 1, "noise_level": 1, "duration_hours": 2.0, "is_outdoor": true, "tags": ["thien_nhien", "nui", "yen_tinh"], "opening_hours": null, "address": "Địa chỉ giả lập 1", "description": "Địa điểm giả lập cho kiểm thử.", "image_url": "https://example.invalid/fake-da-lat-pines.jpg", "avg_rating": 4.6}, "day_number": 1, "time_slot": "afternoon", "order_in_slot": 1, "estimated_cost": 0, "notes": "Đi dạo ngắn.", "id": 2}
+    ]},
+    {"day_number": 2, "date": "2026-10-13", "weather": null, "items": [
+      {"destination": {"id": 3, "name": "Chợ Ẩm thực Mẫu Đà Lạt", "province": "Đà Lạt", "latitude": 11.942, "longitude": 108.438, "category_id": 3, "price_range": 3, "noise_level": 4, "duration_hours": 2.0, "is_outdoor": false, "tags": ["am_thuc", "mua_sam", "vui_choi"], "opening_hours": {"mon": "10:00-22:00"}, "address": "Địa chỉ giả lập 3", "description": "Địa điểm giả lập cho kiểm thử.", "image_url": "https://example.invalid/fake-da-lat-food.jpg", "avg_rating": 4.3}, "day_number": 2, "time_slot": "evening", "order_in_slot": 1, "estimated_cost": 300000, "notes": "Ăn tối giả lập.", "id": 3}
+    ]}
+  ],
+  "cost": {"budget": 2000000, "per_day": 1000000, "allocation": {"luu_tru": 700000, "an_uong": 600000, "di_chuyen": 300000, "ve_vao_cua": 200000, "du_phong": 200000}, "tickets_estimated": 400000, "within_budget": false},
+  "warnings": ["Dữ liệu kế hoạch giả lập.", "Chi phí vé ước tính vượt phần ngân sách vé."]
+}

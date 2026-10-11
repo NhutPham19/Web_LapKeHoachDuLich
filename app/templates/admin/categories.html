@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Quản lý danh mục — Quản trị viên{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-md-5">
+        <div class="card shadow-sm border-0 rounded-3 p-4">
+            <h4 class="fw-bold mb-3 text-dark">Thêm danh mục mới</h4>
+            <form action="/admin/categories" method="POST">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Tên danh mục</label>
+                    <input type="text" class="form-control" name="name" placeholder="Ví dụ: Di tích lịch sử" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Biểu tượng (Icon)</label>
+                    <input type="text" class="form-control" name="icon" placeholder="bi-bank">
+                </div>
+                <button type="submit" class="btn btn-primary fw-bold w-100">Thêm danh mục</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="card shadow-sm border-0 rounded-3 p-4">
+            <h4 class="fw-bold mb-3 text-dark">Danh sách danh mục</h4>
+            <ul class="list-group list-group-flush">
+                {% for cat in categories %}
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <div>
+                        <i class="bi {{ cat.icon or 'bi-tag' }} text-primary me-2"></i>
+                        <strong>{{ cat.name }}</strong>
+                    </div>
+                    <span class="badge bg-light text-muted border">ID: {{ cat.id }}</span>
+                </li>
+                {% else %}
+                <li class="list-group-item text-muted">Chưa có danh mục nào.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
