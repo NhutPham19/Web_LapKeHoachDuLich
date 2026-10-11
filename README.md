@@ -1,6 +1,6 @@
 # SourceCode_DuLich — Mã Nguồn Website Lập Kế Hoạch Du Lịch Cá Nhân Hóa
 
-> **Lưu ý cho các Agents (ANTIGRAVITY, CODEX, CURSOR):**
+> **Lưu ý cho các Agents (ANTIGRAVITY, CODEX):**
 > Đây là thư mục gốc chứa toàn bộ mã nguồn của dự án (Git repository chính). Mọi lệnh terminal (chạy test, cài đặt, chạy server) đều phải được thực thi trong thư mục này.
 
 ---
@@ -24,8 +24,8 @@ SourceCode_DuLich/
 │  │  ├─ itinerary.py          # Greedy itinerary planning & haversine
 │  │  ├─ budget.py             # Phân bổ ngân sách & chi phí
 │  │  └─ planner.py            # Điều phối toàn bộ kế hoạch chuyến đi
-│  ├─ templates/               # (CURSOR): Giao diện Jinja2 + Bootstrap 5
-│  └─ static/                  # (CURSOR): File tĩnh frontend
+│  ├─ templates/               # (ANTIGRAVITY): Giao diện Jinja2 + Bootstrap 5
+│  └─ static/                  # (ANTIGRAVITY): File tĩnh frontend
 │     ├─ css/                  # Custom CSS (nếu cần)
 │     └─ js/                   # Custom JavaScript (gọi API / Leaflet)
 ├─ db/
@@ -52,9 +52,8 @@ SourceCode_DuLich/
 
 | Agent | Được sửa | Không được sửa |
 |---|---|---|
-| **ANTIGRAVITY** | `app/` (trừ `templates/`, `static/`), `db/`, `requirements.txt`, `Procfile`, `.github/`, `.env.example` | `tests/`, `app/templates/`, `app/static/` |
+| **ANTIGRAVITY** | Toàn bộ `app/` (Backend, Services, Routes, `templates/`, `static/`), `db/`, `requirements.txt`, `Procfile`, `.github/`, `.env.example` | `tests/` |
 | **CODEX** | `tests/` | Mọi thư mục khác (chỉ đọc và báo lỗi) |
-| **CURSOR** | `app/templates/`, `app/static/` | `app/services/`, `db/`, `tests/` |
 
 ---
 

@@ -1,5 +1,5 @@
 {
-  "fixture_notice": "DỮ LIỆU GIẢ LẬP chỉ dùng để dựng giao diện Cursor và kiểm thử.",
+  "fixture_notice": "DỮ LIỆU GIẢ LẬP chỉ dùng để dựng giao diện và kiểm thử.",
   "request": {"province": "Đà Lạt", "start_date": "2026-10-12", "days": 2, "budget": 2000000, "num_people": 2, "interests": ["thien_nhien", "yen_tinh", "am_thuc"], "travel_style": "thoai_mai", "user_id": 101},
   "days": [
     {"day_number": 1, "date": "2026-10-12", "weather": {"date": "2026-10-12", "temp_min": 17.0, "temp_max": 23.0, "humidity": 78, "rain_prob": {"morning": 0.8, "afternoon": 0.3, "evening": 0.1}, "condition": "mưa vừa", "is_severe": false}, "items": [
