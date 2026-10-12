@@ -18,7 +18,7 @@
                         <div class="col-md-4">
                             <label class="form-label fw-bold">Tỉnh / Thành</label>
                             <select class="form-select" name="province" required>
-                                {% for p in ['Đà Lạt', 'Hội An', 'Phú Quốc'] %}
+                                {% for p in provinces|default(['Đà Lạt', 'Hội An', 'Phú Quốc', 'Hà Nội', 'Đà Nẵng', 'TP. Hồ Chí Minh']) %}
                                 <option value="{{ p }}" {% if destination and destination.province == p %}selected{% endif %}>{{ p }}</option>
                                 {% endfor %}
                             </select>
@@ -59,8 +59,14 @@
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Ảnh đại diện (URL)</label>
+                            <label class="form-label fw-bold">Ảnh đại diện (URL / Cloudinary)</label>
                             <input type="url" class="form-control" name="image_url" value="{{ destination.image_url if destination else '' }}" placeholder="https://...">
+                            {% if destination %}
+                            <div class="mt-2 d-flex align-items-center gap-2">
+                                <img src="{{ dest_img_url(destination, 200) }}" alt="Preview" class="img-thumbnail rounded" style="width: 100px; height: 60px; object-fit: cover;">
+                                <small class="text-muted">Nguồn: <strong>{{ destination.image_source|default('placeholder') }}</strong></small>
+                            </div>
+                            {% endif %}
                         </div>
                         <div class="col-12">
                             <label class="form-label fw-bold">Mô tả ngắn</label>

@@ -1,6 +1,7 @@
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
 
 from app.auth import admin_required
+from app.contracts import PROVINCES
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
 
@@ -50,7 +51,7 @@ def new_destination():
         return redirect(url_for("admin.destinations_view"))
 
     categories = current_app.repo.list_categories()
-    return render_template("admin/destination_form.html", destination=None, categories=categories)
+    return render_template("admin/destination_form.html", destination=None, categories=categories, provinces=PROVINCES)
 
 
 @admin_bp.route("/destinations/<int:dest_id>/edit", methods=["GET"])
@@ -61,7 +62,7 @@ def edit_destination_view(dest_id: int):
         flash("Không tìm thấy địa điểm", "danger")
         return redirect(url_for("admin.destinations_view"))
     categories = current_app.repo.list_categories()
-    return render_template("admin/destination_form.html", destination=dest, categories=categories)
+    return render_template("admin/destination_form.html", destination=dest, categories=categories, provinces=PROVINCES)
 
 
 @admin_bp.route("/destinations/<int:dest_id>", methods=["POST"])
