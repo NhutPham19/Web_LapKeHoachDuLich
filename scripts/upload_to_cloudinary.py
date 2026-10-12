@@ -52,19 +52,27 @@ def upload_single_image(cloud_name: str, api_key: str, api_secret: str, image_ur
     b64_content = "data:image/jpeg;base64," + base64.b64encode(img_bytes).decode("utf-8")
 
     # 2. Tạo chữ ký SHA-1 cho Cloudinary
+    folder = "/".join(public_id.split("/")[:-1])
     timestamp = int(time.time())
-    to_sign = f"public_id={public_id}&timestamp={timestamp}{api_secret}"
+    if folder:
+        to_sign = f"asset_folder={folder}&public_id={public_id}&timestamp={timestamp}{api_secret}"
+    else:
+        to_sign = f"public_id={public_id}&timestamp={timestamp}{api_secret}"
     signature = hashlib.sha1(to_sign.encode("utf-8")).hexdigest()
 
     # 3. Gửi POST request lên Cloudinary API
-    upload_url = f"https://api.cloudinary.com/v1_1/{cloud_name}/image/upload"
-    post_data = urllib.parse.urlencode({
+    payload = {
         "file": b64_content,
         "public_id": public_id,
         "timestamp": timestamp,
         "api_key": api_key,
         "signature": signature,
-    }).encode("utf-8")
+    }
+    if folder:
+        payload["asset_folder"] = folder
+
+    upload_url = f"https://api.cloudinary.com/v1_1/{cloud_name}/image/upload"
+    post_data = urllib.parse.urlencode(payload).encode("utf-8")
 
     post_req = urllib.request.Request(upload_url, data=post_data, headers={"User-Agent": USER_AGENT})
     with urllib.request.urlopen(post_req, timeout=25) as resp:

@@ -92,6 +92,18 @@ def create_app(repo=None):
     def index():
         return render_template("index.html")
 
+    @app.errorhandler(404)
+    def handle_not_found(e):
+        if request.path.startswith("/api/"):
+            return jsonify({"error": "not_found", "message": "Tài nguyên không tồn tại"}), 404
+        return render_template("404.html"), 404
+
+    @app.errorhandler(500)
+    def handle_server_error(e):
+        if request.path.startswith("/api/"):
+            return jsonify({"error": "internal_error", "message": "Lỗi máy chủ nội bộ"}), 500
+        return render_template("500.html"), 500
+
     from .routes.admin import admin_bp
     from .routes.auth import auth_bp
     from .routes.ratings import ratings_bp
