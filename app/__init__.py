@@ -42,7 +42,8 @@ def create_app(repo=None):
         cloud_name = config.CLOUDINARY_CLOUD_NAME
         pub_id = getattr(dest, "image_public_id", None) or (dest.get("image_public_id") if isinstance(dest, dict) else None)
         if pub_id and cloud_name:
-            return f"https://res.cloudinary.com/{cloud_name}/image/upload/c_fill,ar_16:9,g_auto,f_auto,q_auto,w_{width}/{pub_id}"
+            v_str = f"v{config.IMAGE_VERSION}/" if getattr(config, "IMAGE_VERSION", None) else ""
+            return f"https://res.cloudinary.com/{cloud_name}/image/upload/c_fill,ar_16:9,g_auto,f_auto,q_auto,w_{width}/{v_str}{pub_id}"
 
         img_url = getattr(dest, "image_url", "") or (dest.get("image_url", "") if isinstance(dest, dict) else "")
         if img_url and str(img_url).startswith("http"):

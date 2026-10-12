@@ -23,3 +23,5 @@ if not CLOUDINARY_CLOUD_NAME and CLOUDINARY_URL:
     except Exception:
         pass
 
+IMAGE_VERSION = os.environ.get("IMAGE_VERSION", "20261012_v2")
+
