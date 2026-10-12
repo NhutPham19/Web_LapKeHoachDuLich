@@ -2,6 +2,7 @@ from flask import Blueprint, current_app, flash, redirect, render_template, requ
 
 from app.auth import admin_required
 from app.contracts import PROVINCES
+from app.services.cloudinary_uploader import upload_image_file
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
 
@@ -16,26 +17,112 @@ def stats_view():
 @admin_bp.route("/destinations")
 @admin_required
 def destinations_view():
+    q = request.args.get("q", "").strip()
+    province = request.args.get("province", "").strip()
+    category_id = request.args.get("category_id", "").strip()
+    is_outdoor = request.args.get("is_outdoor", "").strip()
+    page = request.args.get("page", 1, type=int)
+    per_page = 15
+
+    if page < 1:
+        page = 1
+
     dests = current_app.repo.list_destinations(active_only=False)
-    return render_template("admin/destinations.html", destinations=dests)
+
+    # Lọc danh sách
+    filtered = []
+    q_lower = q.lower()
+    for d in dests:
+        if q_lower:
+            match_name = q_lower in d.name.lower()
+            match_addr = q_lower in (d.address or "").lower()
+            match_tags = any(q_lower in tag.lower() for tag in (d.tags or ()))
+            if not (match_name or match_addr or match_tags):
+                continue
+
+        if province and d.province != province:
+            continue
+
+        if category_id:
+            try:
+                cid = int(category_id)
+                if d.category_id != cid:
+                    continue
+            except ValueError:
+                pass
+
+        if is_outdoor != "":
+            if is_outdoor == "1" and not d.is_outdoor:
+                continue
+            if is_outdoor == "0" and d.is_outdoor:
+                continue
+
+        filtered.append(d)
+
+    total_count = len(filtered)
+    total_pages = max(1, (total_count + per_page - 1) // per_page)
+    if page > total_pages:
+        page = total_pages
+
+    start_idx = (page - 1) * per_page
+    end_idx = start_idx + per_page
+    paginated_dests = filtered[start_idx:end_idx]
+
+    categories = current_app.repo.list_categories()
+
+    return render_template(
+        "admin/destinations.html",
+        destinations=paginated_dests,
+        categories=categories,
+        provinces=PROVINCES,
+        current_page=page,
+        total_pages=total_pages,
+        total_count=total_count,
+        per_page=per_page,
+        filters={
+            "q": q,
+            "province": province,
+            "category_id": category_id,
+            "is_outdoor": is_outdoor,
+        },
+    )
 
 
 @admin_bp.route("/destinations/new", methods=["GET", "POST"])
 @admin_required
 def new_destination():
     if request.method == "POST":
+        name = request.form.get("name", "").strip()
+        province = request.form.get("province", "").strip()
         img = request.form.get("image_url", "").strip()
         if img and not (img.startswith("http://") or img.startswith("https://")):
             img = ""
 
+        # Upload file ảnh từ máy nếu có
+        image_file = request.files.get("image_file")
+        image_public_id = None
+        image_source = "manual"
+        if image_file and image_file.filename:
+            try:
+                upload_res = upload_image_file(image_file, province, name)
+                if upload_res:
+                    image_public_id = upload_res["public_id"]
+                    img = upload_res["secure_url"]
+                    image_source = "admin_upload"
+                    flash("Đã tải ảnh lên Cloudinary thành công!", "success")
+            except Exception as e:
+                flash(f"Lỗi tải ảnh lên Cloudinary ({e}), lưu thông tin không kèm ảnh mới.", "warning")
+
         data = {
-            "name": request.form.get("name", "").strip(),
-            "province": request.form.get("province", "").strip(),
+            "name": name,
+            "province": province,
             "address": request.form.get("address", "").strip(),
             "latitude": float(request.form.get("latitude", 0)),
             "longitude": float(request.form.get("longitude", 0)),
             "description": request.form.get("description", "").strip(),
             "image_url": img,
+            "image_public_id": image_public_id,
+            "image_source": image_source,
             "category_id": int(request.form.get("category_id")) if request.form.get("category_id") else None,
             "price_range": int(request.form.get("price_range", 1)),
             "noise_level": int(request.form.get("noise_level", 3)),
@@ -68,13 +155,30 @@ def edit_destination_view(dest_id: int):
 @admin_bp.route("/destinations/<int:dest_id>", methods=["POST"])
 @admin_required
 def update_destination(dest_id: int):
+    name = request.form.get("name", "").strip()
+    province = request.form.get("province", "").strip()
     img = request.form.get("image_url", "").strip()
     if img and not (img.startswith("http://") or img.startswith("https://")):
         img = ""
 
+    # Upload file ảnh từ máy nếu có
+    image_file = request.files.get("image_file")
+    image_public_id = None
+    image_source = None
+    if image_file and image_file.filename:
+        try:
+            upload_res = upload_image_file(image_file, province, name)
+            if upload_res:
+                image_public_id = upload_res["public_id"]
+                img = upload_res["secure_url"]
+                image_source = "admin_upload"
+                flash("Đã tải ảnh mới lên Cloudinary thành công!", "success")
+        except Exception as e:
+            flash(f"Lỗi tải ảnh lên Cloudinary ({e}), giữ ảnh hiện tại.", "warning")
+
     data = {
-        "name": request.form.get("name", "").strip(),
-        "province": request.form.get("province", "").strip(),
+        "name": name,
+        "province": province,
         "address": request.form.get("address", "").strip(),
         "latitude": float(request.form.get("latitude", 0)),
         "longitude": float(request.form.get("longitude", 0)),
@@ -90,6 +194,10 @@ def update_destination(dest_id: int):
         "tags": tuple(request.form.getlist("tags")),
         "opening_hours": None,
     }
+    if image_public_id:
+        data["image_public_id"] = image_public_id
+        data["image_source"] = image_source
+
     current_app.repo.save_destination(data, destination_id=dest_id)
     flash("Đã cập nhật địa điểm thành công!", "success")
     return redirect(url_for("admin.destinations_view"))

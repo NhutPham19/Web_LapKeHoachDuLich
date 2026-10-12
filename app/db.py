@@ -240,6 +240,9 @@ class PgRepo:
 
         with self._get_conn() as conn:
             with conn.cursor() as cur:
+                img_pub_id = data.get("image_public_id")
+                img_source = data.get("image_source", "manual")
+
                 if destination_id:
                     cur.execute(
                         """
@@ -247,7 +250,9 @@ class PgRepo:
                         SET name = %s, province = %s, address = %s, latitude = %s, longitude = %s,
                             description = %s, image_url = %s, category_id = %s, price_range = %s,
                             noise_level = %s, duration_hours = %s, is_outdoor = %s, ticket_price = %s,
-                            is_active = %s, opening_hours = %s, tags = %s
+                            is_active = %s, opening_hours = %s, tags = %s,
+                            image_public_id = COALESCE(%s, image_public_id),
+                            image_source = COALESCE(%s, image_source)
                         WHERE id = %s
                         """,
                         (
@@ -267,6 +272,8 @@ class PgRepo:
                             is_active,
                             opening_json,
                             tags_json,
+                            img_pub_id,
+                            img_source,
                             destination_id,
                         ),
                     )
@@ -278,12 +285,12 @@ class PgRepo:
                             name, province, address, latitude, longitude,
                             description, image_url, category_id, price_range,
                             noise_level, duration_hours, is_outdoor, ticket_price,
-                            is_active, opening_hours, tags
+                            is_active, opening_hours, tags, image_public_id, image_source
                         ) VALUES (
                             %s, %s, %s, %s, %s,
                             %s, %s, %s, %s,
                             %s, %s, %s, %s,
-                            %s, %s, %s
+                            %s, %s, %s, %s, %s
                         ) RETURNING id
                         """,
                         (
@@ -303,6 +310,8 @@ class PgRepo:
                             is_active,
                             opening_json,
                             tags_json,
+                            img_pub_id,
+                            img_source,
                         ),
                     )
                     return cur.fetchone()[0]
