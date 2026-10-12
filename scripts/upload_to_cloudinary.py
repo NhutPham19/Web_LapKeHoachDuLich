@@ -33,7 +33,7 @@ def get_cloudinary_credentials():
 
 def upload_single_image(cloud_name: str, api_key: str, api_secret: str, image_url: str, public_id: str) -> dict:
     clean_url = image_url.split("?")[0]
-    # 1. Tải ảnh từ Wikimedia về bộ nhớ đệm (có retry backoff chống 403 rate-limit)
+    # 1. Tải ảnh từ Wikimedia về bộ nhớ đệm (có retry backoff)
     img_bytes = None
     last_err = None
     for attempt in range(3):
@@ -51,25 +51,28 @@ def upload_single_image(cloud_name: str, api_key: str, api_secret: str, image_ur
 
     b64_content = "data:image/jpeg;base64," + base64.b64encode(img_bytes).decode("utf-8")
 
-    # 2. Tạo chữ ký SHA-1 cho Cloudinary
+    # 2. Tạo chữ ký SHA-1 cho Cloudinary với overwrite=true và invalidate=true
     folder = "/".join(public_id.split("/")[:-1])
     timestamp = int(time.time())
-    if folder:
-        to_sign = f"asset_folder={folder}&public_id={public_id}&timestamp={timestamp}{api_secret}"
-    else:
-        to_sign = f"public_id={public_id}&timestamp={timestamp}{api_secret}"
+    params = {
+        "asset_folder": folder,
+        "invalidate": "true",
+        "overwrite": "true",
+        "public_id": public_id,
+        "timestamp": str(timestamp),
+    }
+    if not folder:
+        del params["asset_folder"]
+
+    sorted_params = "&".join(f"{k}={params[k]}" for k in sorted(params.keys()))
+    to_sign = sorted_params + api_secret
     signature = hashlib.sha1(to_sign.encode("utf-8")).hexdigest()
 
     # 3. Gửi POST request lên Cloudinary API
-    payload = {
-        "file": b64_content,
-        "public_id": public_id,
-        "timestamp": timestamp,
-        "api_key": api_key,
-        "signature": signature,
-    }
-    if folder:
-        payload["asset_folder"] = folder
+    payload = dict(params)
+    payload["file"] = b64_content
+    payload["api_key"] = api_key
+    payload["signature"] = signature
 
     upload_url = f"https://api.cloudinary.com/v1_1/{cloud_name}/image/upload"
     post_data = urllib.parse.urlencode(payload).encode("utf-8")
@@ -79,10 +82,11 @@ def upload_single_image(cloud_name: str, api_key: str, api_secret: str, image_ur
         return json.loads(resp.read().decode("utf-8"))
 
 
-def upload_all_destinations(max_items: int = 100):
+def upload_all_destinations(max_items: int = 150, force: bool = False):
     cloud_name, api_key, api_secret = get_cloudinary_credentials()
     root_dir = Path(__file__).resolve().parent.parent
     manifest_path = root_dir / "db" / "seed" / "image_manifest.csv"
+    cache_path = root_dir / "db" / "seed" / ".cloudinary_upload_cache.json"
     cache_path = root_dir / "db" / "seed" / ".cloudinary_upload_cache.json"
     dest_path = root_dir / "db" / "seed" / "destinations.csv"
 
@@ -116,7 +120,7 @@ def upload_all_destinations(max_items: int = 100):
         if status != "APPROVED" or not thumb_url:
             continue
 
-        if public_id in cache:
+        if not force and public_id in cache and cache[public_id].get("source_thumb_url") == thumb_url:
             skip_count += 1
             continue
 
@@ -125,6 +129,7 @@ def upload_all_destinations(max_items: int = 100):
             res = upload_single_image(cloud_name, api_key, api_secret, thumb_url, public_id)
             cache[public_id] = {
                 "secure_url": res.get("secure_url"),
+                "source_thumb_url": thumb_url,
                 "bytes": res.get("bytes"),
                 "format": res.get("format"),
                 "uploaded_at": time.strftime("%Y-%m-%d %H:%M:%S"),
@@ -151,4 +156,4 @@ def upload_all_destinations(max_items: int = 100):
 
 
 if __name__ == "__main__":
-    upload_all_destinations()
+    upload_all_destinations(force=True)
